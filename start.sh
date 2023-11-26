@@ -6,6 +6,9 @@ composer install
 # Esegui composer update
 composer update
 
+# Lunch migration
+php artisan migrate
+
 # Rename file .env
 cp .env.local .env
 
