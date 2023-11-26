@@ -53,6 +53,12 @@ class Users extends Controller
              */
             'role' => 'required|in:admin,user',
 
+			/**
+			 * @var array $restaurants
+			 * @example [1]
+			 */
+			'restaurants' => 'nullable|array|exists:restaurants,id',
+
             /**
              * @var string $password
              * @example password
@@ -77,6 +83,10 @@ class Users extends Controller
         }
 
         $user->save();
+
+		if ($request->filled('restaurants') && $user->role == 'user') {
+			$user->restaurants()->syncWithoutDetaching($request->restaurants);
+		}
 
 		if ($user->role == 'admin') {
 			$restaurantIds = Restaurant::pluck('id');
@@ -127,6 +137,12 @@ class Users extends Controller
              */
             'role' => 'required|in:admin,user',
 
+			/**
+			 * @var array $restaurants
+			 * @example [1]
+			 */
+			'restaurants' => 'nullable|array|exists:restaurants,id',
+
             /**
              * @var string $password
              * @example password
@@ -148,6 +164,10 @@ class Users extends Controller
             $user->password = Hash::make($request->password);
         }
 
+		if ($request->filled('restaurants') && $user->role == 'user') {
+			$user->restaurants()->syncWithoutDetaching($request->restaurants);
+		}
+
         $user->save();
 
         return new UserResource($user);
@@ -161,6 +181,8 @@ class Users extends Controller
         if (Gate::denies('admin')) {
             abort(403, 'Unauthorized');
         }
+
+		$user->restaurants()->detach();
         
         $user->delete();
 
