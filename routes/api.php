@@ -43,10 +43,7 @@ Route::group(["middleware" => ["auth:sanctum"]], function(){
             Route::prefix('{category}')->group(function () {
                 Route::prefix('dish')->group(function () {
                     Route::get('/', [App\Http\Controllers\Dishes::class, 'index']);
-                    Route::get('/{dish}', [App\Http\Controllers\Dishes::class, 'show']);
                     Route::post('/', [App\Http\Controllers\Dishes::class, 'store']);
-                    Route::put('/{dish}', [App\Http\Controllers\Dishes::class, 'update']);
-                    Route::delete('/{dish}', [App\Http\Controllers\Dishes::class, 'destroy']);
                 });
             });
         });
@@ -56,5 +53,11 @@ Route::group(["middleware" => ["auth:sanctum"]], function(){
         Route::get('/{category}', [App\Http\Controllers\Categories::class, 'show']);
         Route::put('/{category}', [App\Http\Controllers\Categories::class, 'update']);
         Route::delete('/{category}', [App\Http\Controllers\Categories::class, 'destroy']);
+    });
+
+    Route::prefix('dish')->group(function () {
+        Route::get('/{dish}', [App\Http\Controllers\Dishes::class, 'show']);
+        Route::put('/{dish}', [App\Http\Controllers\Dishes::class, 'update']);
+        Route::delete('/{dish}', [App\Http\Controllers\Dishes::class, 'destroy']);
     });
 });

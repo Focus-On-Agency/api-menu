@@ -6,6 +6,7 @@ use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Http\Resources\CategoryResource;
 use App\Models\Restaurant;
+use Illuminate\Support\Facades\Gate;
 
 class Categories extends Controller
 {
@@ -24,6 +25,10 @@ class Categories extends Controller
      */
     public function store(Restaurant $restaurant, Request $request)
     {
+        if (Gate::denies('admin')) {
+            abort(403, 'Unauthorized');
+        }
+
         $request->validate([
             /**
              * @var string $name
@@ -148,6 +153,12 @@ class Categories extends Controller
      */
     public function destroy(Category $category)
     {
-        //
+        if (Gate::denies('admin')) {
+            abort(403, 'Unauthorized');
+        }
+
+        $category->delete();
+
+        return response()->noContent();
     }
 }

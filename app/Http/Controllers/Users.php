@@ -97,6 +97,7 @@ class Users extends Controller
      */
     public function update(Request $request, User $user)
     {
+        dd($request->all());
         if (Gate::denies('admin')) {
             abort(403, 'Unauthorized');
         }
