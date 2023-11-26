@@ -105,6 +105,8 @@ class Users extends Controller
             abort(403, 'Unauthorized');
         }
 
+        $user->load('restaurants');
+
         return new UserResource($user);
     }
 

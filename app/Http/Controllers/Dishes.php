@@ -16,11 +16,13 @@ class Dishes extends Controller
     /**
      * List
      */
-    public function index()
-    {   
-        return [
-            'dishes' => DishResource::collection(Dish::all()),
-        ];
+    public function index(Restaurant $restaurant, Category $category)
+    {
+        return DishResource::collection($restaurant
+            ->dishes()
+            ->where('category_id', $category->id)
+            ->get()
+        );
     }
 
     /**
