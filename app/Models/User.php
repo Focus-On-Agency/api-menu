@@ -42,4 +42,12 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany<Restaurant>
+     */
+    public function restaurants()
+    {
+        return $this->belongsToMany(Restaurant::class, 'restaurants_users', 'user_id', 'restaurant_id');
+    }
 }

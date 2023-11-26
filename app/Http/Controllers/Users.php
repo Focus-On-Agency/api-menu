@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Http\Resources\UserResource;
 use App\Http\Resources\AuthResource;
+use App\Models\Restaurant;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Gate;
@@ -76,6 +77,11 @@ class Users extends Controller
         }
 
         $user->save();
+
+		if ($user->role == 'admin') {
+			$restaurantIds = Restaurant::pluck('id');
+			$user->restaurants()->syncWithoutDetaching($restaurantIds);
+		}
 
         return new UserResource($user);
     }

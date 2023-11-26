@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Http\Resources\CategoryResource;
+use App\Http\Resources\RestaurantResource;
 use App\Models\Restaurant;
 use Illuminate\Support\Facades\Gate;
 
@@ -17,6 +18,8 @@ class Categories extends Controller
     {
         return [
             'categories' => CategoryResource::collection($restaurant->categories),
+            'current_restaurant' => $restaurant,
+            'restaurants' => RestaurantResource::collection(Restaurant::all()),
         ];
     }
 

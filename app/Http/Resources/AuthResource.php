@@ -18,6 +18,7 @@ class AuthResource extends JsonResource
             'name' => $this->name,
             'role' => $this->role,
             'token' => $this->createToken('authToken')->plainTextToken,
+            'restaurants' => RestaurantResource::collection($this->restaurants),
         ];
     }
 }
