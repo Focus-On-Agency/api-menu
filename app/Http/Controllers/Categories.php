@@ -75,7 +75,7 @@ class Categories extends Controller
      */
     public function show(Category $category)
     {
-        return new CategoryResource($category->with('dishes'));
+        return new CategoryResource($category);
     }
 
     /**

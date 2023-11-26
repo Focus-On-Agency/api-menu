@@ -115,6 +115,13 @@ class Users extends Controller
             'email' => 'required|string',
 
             /**
+             * @var enum $role
+             * 
+             * @example admin
+             */
+            'role' => 'required|in:admin,user',
+
+            /**
              * @var string $password
              * @example password
              */
@@ -129,10 +136,13 @@ class Users extends Controller
 
         $user->name = $request->name;
         $user->email = $request->email;
+        $user->role = $request->role;
 
         if ($request->filled('password')) {
             $user->password = Hash::make($request->password);
         }
+
+        $user->save();
 
         return new UserResource($user);
     }
