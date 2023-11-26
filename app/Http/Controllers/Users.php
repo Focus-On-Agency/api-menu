@@ -17,7 +17,7 @@ class Users extends Controller
      */
     public function index()
     {
-        if (Gate::cannot('admin')) {
+        if (Gate::denies('admin')) {
             abort(403, 'Unauthorized');
         }
 
@@ -29,7 +29,7 @@ class Users extends Controller
      */
     public function store(Request $request)
     {
-        if (Gate::cannot('admin')) {
+        if (Gate::denies('admin')) {
             abort(403, 'Unauthorized');
         }
 
@@ -82,7 +82,7 @@ class Users extends Controller
      */
     public function show(User $user)
     {
-        if (Gate::cannot('admin')) {
+        if (Gate::denies('admin')) {
             abort(403, 'Unauthorized');
         }
 
@@ -94,7 +94,7 @@ class Users extends Controller
      */
     public function update(Request $request, User $user)
     {
-        if (Gate::cannot('admin')) {
+        if (Gate::denies('admin')) {
             abort(403, 'Unauthorized');
         }
 
@@ -139,7 +139,7 @@ class Users extends Controller
      */
     public function destroy(User $user)
     {
-        if (Gate::cannot('admin')) {
+        if (Gate::denies('admin')) {
             abort(403, 'Unauthorized');
         }
         

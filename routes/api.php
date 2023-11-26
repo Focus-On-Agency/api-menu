@@ -26,12 +26,12 @@ Route::group(["middleware" => ["auth:sanctum"]], function(){
         Route::delete('/{user}', [App\Http\Controllers\Users::class, 'destroy']);
     });
 
-    Route::prefix('resturant')->group(function () {
-        Route::get('/', [App\Http\Controllers\Resturants::class, 'index']);
-        Route::get('/{resturant}', [App\Http\Controllers\Resturants::class, 'show']);
-        Route::post('/', [App\Http\Controllers\Resturants::class, 'store']);
-        Route::put('/{resturant}', [App\Http\Controllers\Resturants::class, 'update']);
-        Route::delete('/{resturant}', [App\Http\Controllers\Resturants::class, 'destroy']);
+    Route::prefix('restaurant')->group(function () {
+        Route::get('/', [App\Http\Controllers\Restaurants::class, 'index']);
+        Route::get('/{restaurant}', [App\Http\Controllers\Restaurants::class, 'show']);
+        Route::post('/', [App\Http\Controllers\Restaurants::class, 'store']);
+        Route::put('/{restaurant}', [App\Http\Controllers\Restaurants::class, 'update']);
+        Route::delete('/{restaurant}', [App\Http\Controllers\Restaurants::class, 'destroy']);
     });
 
     Route::prefix('category')->group(function () {

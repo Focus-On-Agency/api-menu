@@ -18,9 +18,9 @@ class Category extends Model
 
     protected $with = ['image'];
 
-    public function resturants()
+    public function restaurants()
     {
-        return $this->belongsToMany(Resturant::class, 'categories_resturants', 'category_id', 'resturant_id');
+        return $this->belongsToMany(Restaurant::class, 'categories_restaurants', 'category_id', 'restaurant_id');
     }
 
     public function dishes()

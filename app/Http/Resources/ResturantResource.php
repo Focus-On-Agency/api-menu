@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Resources\UserResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class ResturantResource extends JsonResource
+class RestaurantResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
