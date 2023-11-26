@@ -8,6 +8,7 @@ use App\Http\Resources\UserResource;
 use App\Http\Resources\AuthResource;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Gate;
 
 class Users extends Controller
 {
@@ -16,6 +17,10 @@ class Users extends Controller
      */
     public function index()
     {
+        if (Gate::cannot('admin')) {
+            abort(403, 'Unauthorized');
+        }
+
         return UserResource::collection(User::all());
     }
 
@@ -24,6 +29,10 @@ class Users extends Controller
      */
     public function store(Request $request)
     {
+        if (Gate::cannot('admin')) {
+            abort(403, 'Unauthorized');
+        }
+
         $request->validate([
             /**
              * @var string $name
@@ -36,6 +45,12 @@ class Users extends Controller
              * @example mark@example.com
              */
             'email' => 'required|string',
+
+            /**
+             * @var enum $role
+             * @example admin
+             */
+            'role' => 'required|in:admin,user',
 
             /**
              * @var string $password
@@ -67,6 +82,10 @@ class Users extends Controller
      */
     public function show(User $user)
     {
+        if (Gate::cannot('admin')) {
+            abort(403, 'Unauthorized');
+        }
+
         return new UserResource($user);
     }
 
@@ -75,6 +94,10 @@ class Users extends Controller
      */
     public function update(Request $request, User $user)
     {
+        if (Gate::cannot('admin')) {
+            abort(403, 'Unauthorized');
+        }
+
         $request->validate([
             /**
              * @var string $name
@@ -116,6 +139,10 @@ class Users extends Controller
      */
     public function destroy(User $user)
     {
+        if (Gate::cannot('admin')) {
+            abort(403, 'Unauthorized');
+        }
+        
         $user->delete();
 
         return response()->json(['message' => 'User deleted successfully'], 200);
@@ -152,7 +179,7 @@ class Users extends Controller
 
             $user = Auth::user();
 
-            return response()->json( new AuthResource($user), 200);
+            return new AuthResource($user);
 
         } catch (\Throwable $th) {
             return response()->json(['message' => $th->getMessage()], 500);

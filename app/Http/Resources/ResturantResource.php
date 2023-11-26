@@ -3,9 +3,10 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
+use App\Http\Resources\UserResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class UserResource extends JsonResource
+class ResturantResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -17,8 +18,8 @@ class UserResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'email' => $this->email,
-            'role' => $this->role,
+            'address' => $this->address,
+            'users' => UserResource::collection($this->whenLoaded('users')),
         ];
     }
 }
