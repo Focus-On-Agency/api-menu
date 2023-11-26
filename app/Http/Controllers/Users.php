@@ -125,13 +125,13 @@ class Users extends Controller
              * @var string $password
              * @example password
              */
-            'password' => 'required|string|confirmed',
+            'password' => 'nullable|string|confirmed',
 
             /**
              * @var string $password_confirmation
              * @example password
              */
-            'password_confirmation' => 'required|string|required_with:password|same:password',
+            'password_confirmation' => 'nullable|string|required_with:password|same:password',
         ]);
 
         $user->name = $request->name;

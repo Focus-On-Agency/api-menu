@@ -20,6 +20,7 @@ class CategoryResource extends JsonResource
             'name' => $this->name,
             'order' => $this->order,
             'visible' => $this->visible,
+            'resturants' => RestaurantResource::collection($this->whenLoaded('restaurants')),
             'image' => new ImageResource($this->whenLoaded('image')),
             'dishes' => DishResource::collection($this->whenLoaded('dishes')),
         ];

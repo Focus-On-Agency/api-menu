@@ -75,6 +75,9 @@ class Categories extends Controller
      */
     public function show(Category $category)
     {
+        $category->load('dishes');
+        $category->load('restaurants');
+
         return new CategoryResource($category);
     }
 
@@ -83,7 +86,61 @@ class Categories extends Controller
      */
     public function update(Request $request, Category $category)
     {
-        //
+        $request->validate([
+            /**
+             * @var string $name
+             * @example Pizza
+             */
+            'name' => 'required|string',
+
+            /**
+             * @var int $order
+             * @example 1
+             */
+            'order' => 'required|integer',
+
+            /**
+             * @var bool $visible
+             * @example true
+             */
+            'visible' => 'required|boolean',
+
+            /**
+             * @var $image
+             */
+            'image' => 'nullable|image',
+
+            /**
+             * @var $restaurants_id
+             * @example 1
+             */
+            'restaurants_id' => 'nullable|array',
+        ]);
+
+        $category->update([
+            'name' => $request->input('name'),
+            'order' => $request->input('order'),
+            'visible' => $request->input('visible'),
+        ]);
+
+        if ($request->hasFile('image')) {
+            $image = $category->image()->create([
+                'path' => $request->file('image')->store('categories'),
+                'name' => $request->file('image')->getClientOriginalName(),
+            ]);
+    
+            $category->image_id = $image->id;
+            $category->save();
+        }
+
+        if ($request->has('restaurants_id')) {
+            $category->restaurants()->sync($request->input('restaurants_id'));
+        }
+
+        $category->load('dishes');
+        $category->load('restaurants');
+
+        return new CategoryResource($category);
     }
 
     /**
