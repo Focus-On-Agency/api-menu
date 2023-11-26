@@ -5,23 +5,24 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Http\Resources\CategoryResource;
+use App\Models\Restaurant;
 
 class Categories extends Controller
 {
     /**
      * List
      */
-    public function index()
+    public function index(Restaurant $restaurant)
     {
         return [
-            'categories' => CategoryResource::collection(Category::all()->sortBy('order')),
+            'categories' => CategoryResource::collection($restaurant->categories),
         ];
     }
 
     /**
      * Store
      */
-    public function store(Request $request)
+    public function store(Restaurant $restaurant, Request $request)
     {
         $request->validate([
             /**
@@ -43,7 +44,7 @@ class Categories extends Controller
             'visible' => 'required|boolean',
 
             /**
-             * @var media $image
+             * @var $image
              */
             'image' => 'nullable|image',
         ]);
@@ -63,6 +64,8 @@ class Categories extends Controller
             $category->image_id = $image->id;
             $category->save();
         }
+
+        $restaurant->categories()->attach($category);
 
         return new CategoryResource($category);
     }

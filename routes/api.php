@@ -34,20 +34,24 @@ Route::group(["middleware" => ["auth:sanctum"]], function(){
         Route::delete('/{restaurant}', [App\Http\Controllers\Restaurants::class, 'destroy']);
     });
 
-    Route::prefix('category')->group(function () {
-        Route::get('/', [App\Http\Controllers\Categories::class, 'index']);
-        Route::get('/{category}', [App\Http\Controllers\Categories::class, 'show']);
-        Route::post('/', [App\Http\Controllers\Categories::class, 'store']);
-        Route::put('/{category}', [App\Http\Controllers\Categories::class, 'update']);
-        Route::delete('/{category}', [App\Http\Controllers\Categories::class, 'destroy']);
-    });
+    Route::prefix('{restaurant}')->group(function () {
+        
+        Route::prefix('category')->group(function () {
+            Route::get('/', [App\Http\Controllers\Categories::class, 'index']);
+            Route::get('/{category}', [App\Http\Controllers\Categories::class, 'show']);
+            Route::post('/', [App\Http\Controllers\Categories::class, 'store']);
+            Route::put('/{category}', [App\Http\Controllers\Categories::class, 'update']);
+            Route::delete('/{category}', [App\Http\Controllers\Categories::class, 'destroy']);
 
-    Route::prefix('dish')->group(function () {
-        Route::get('/', [App\Http\Controllers\Dishes::class, 'index']);
-        Route::get('/{dish}', [App\Http\Controllers\Dishes::class, 'show']);
-        Route::post('/', [App\Http\Controllers\Dishes::class, 'store']);
-        Route::put('/{dish}', [App\Http\Controllers\Dishes::class, 'update']);
-        Route::delete('/{dish}', [App\Http\Controllers\Dishes::class, 'destroy']);
+            Route::prefix('{category}')->group(function () {
+                Route::prefix('dish')->group(function () {
+                    Route::get('/', [App\Http\Controllers\Dishes::class, 'index']);
+                    Route::get('/{dish}', [App\Http\Controllers\Dishes::class, 'show']);
+                    Route::post('/', [App\Http\Controllers\Dishes::class, 'store']);
+                    Route::put('/{dish}', [App\Http\Controllers\Dishes::class, 'update']);
+                    Route::delete('/{dish}', [App\Http\Controllers\Dishes::class, 'destroy']);
+                });
+            });
+        });
     });
-
 });
