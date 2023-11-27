@@ -24,7 +24,7 @@ class Allergens extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Show
      */
     public function show(Allergen $allergen)
     {
@@ -32,7 +32,7 @@ class Allergens extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update
      */
     public function update(Request $request, Allergen $allergen)
     {
@@ -40,7 +40,7 @@ class Allergens extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Delete
      */
     public function destroy(Allergen $allergen)
     {

@@ -93,6 +93,8 @@ class Users extends Controller
 			$user->restaurants()->syncWithoutDetaching($restaurantIds);
 		}
 
+        $user->load('restaurants');
+
         return new UserResource($user);
     }
 
@@ -130,7 +132,7 @@ class Users extends Controller
              * @var string $email
              * @example mark@example.com
              */
-            'email' => 'required|string',
+            'email' => 'required|string|email|unique:users,email,' . $user->id,
 
             /**
              * @var enum $role
