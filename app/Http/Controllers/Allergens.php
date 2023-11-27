@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 class Allergens extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * List
      */
     public function index()
     {
@@ -16,7 +16,7 @@ class Allergens extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store
      */
     public function store(Request $request)
     {

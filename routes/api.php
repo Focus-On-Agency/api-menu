@@ -60,4 +60,12 @@ Route::group(["middleware" => ["auth:sanctum"]], function(){
         Route::put('/{dish}', [App\Http\Controllers\Dishes::class, 'update']);
         Route::delete('/{dish}', [App\Http\Controllers\Dishes::class, 'destroy']);
     });
+
+    Route::prefix('allergen')->group(function () {
+        Route::get('/', [App\Http\Controllers\Allergens::class, 'index']);
+        Route::post('/', [App\Http\Controllers\Allergens::class, 'store']);
+        Route::get('/{allergen}', [App\Http\Controllers\Allergens::class, 'show']);
+        Route::put('/{allergen}', [App\Http\Controllers\Allergens::class, 'update']);
+        Route::delete('/{allergen}', [App\Http\Controllers\Allergens::class, 'destroy']);
+    });
 });

@@ -17,9 +17,12 @@ class Categories extends Controller
     public function index(Restaurant $restaurant)
     {
         return [
-            'categories' => CategoryResource::collection($restaurant->categories),
+            'categories' => CategoryResource::collection($restaurant
+                ->categories()
+                ->orderBy('order')
+                ->get()
+            ),
             'current_restaurant' => $restaurant,
-            'restaurants' => RestaurantResource::collection(Restaurant::all()),
         ];
     }
 
@@ -141,9 +144,7 @@ class Categories extends Controller
             $category->save();
         }
 
-        if ($request->has('restaurants_id')) {
-            $category->restaurants()->sync($request->input('restaurants_id'));
-        }
+        $category->restaurants()->sync($request->input('restaurants_id', []));
 
         $category->load('dishes');
         $category->load('restaurants');
@@ -159,6 +160,8 @@ class Categories extends Controller
         if (Gate::denies('admin')) {
             abort(403, 'Unauthorized');
         }
+
+        $category->restaurants()->detach();
 
         $category->delete();
 

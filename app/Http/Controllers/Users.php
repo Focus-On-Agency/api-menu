@@ -84,8 +84,8 @@ class Users extends Controller
 
         $user->save();
 
-		if ($request->filled('restaurants') && $user->role == 'user') {
-			$user->restaurants()->syncWithoutDetaching($request->restaurants);
+		if ($user->role == 'user') {
+			$user->restaurants()->syncWithoutDetaching($request->input('restaurants', []));
 		}
 
 		if ($user->role == 'admin') {
@@ -166,11 +166,13 @@ class Users extends Controller
             $user->password = Hash::make($request->password);
         }
 
-		if ($request->filled('restaurants') && $user->role == 'user') {
-			$user->restaurants()->syncWithoutDetaching($request->restaurants);
+		if ($user->role == 'user') {
+			$user->restaurants()->syncWithoutDetaching($request->input('restaurants', []));
 		}
 
         $user->save();
+
+        $user->load('restaurants');
 
         return new UserResource($user);
     }
