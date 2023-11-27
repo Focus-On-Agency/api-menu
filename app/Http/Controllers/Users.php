@@ -45,7 +45,7 @@ class Users extends Controller
              * @var string $email
              * @example mark@example.com
              */
-            'email' => 'required|string',
+            'email' => 'required|string|email|unique:users',
 
             /**
              * @var enum $role

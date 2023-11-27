@@ -14,8 +14,6 @@ class Restaurant extends Model
         'address',
     ];
 
-    protected $with = ['users'];
-
     public function dishes()
     {
         return $this->belongsToMany(Dish::class, 'dishes_restaurants', 'restaurant_id', 'dish_id');

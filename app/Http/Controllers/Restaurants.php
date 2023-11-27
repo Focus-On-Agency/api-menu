@@ -60,9 +60,9 @@ class Restaurants extends Controller
             'address' => $request->input('address'),
         ]);
 
-        if ($request->has('user_ids')) {
-            $restaurant->users()->sync($request->input('user_ids'));
-        }
+        $restaurant->users()->sync($request->input('user_ids', []));
+
+        $restaurant->load('users');
 
         return new RestaurantResource($restaurant);
     }
@@ -75,6 +75,8 @@ class Restaurants extends Controller
         if (Gate::denies('admin')) {
             abort(403);
         }
+
+        $restaurant->load('users');
 
         return new RestaurantResource($restaurant);
     }
@@ -122,6 +124,8 @@ class Restaurants extends Controller
 
         $restaurant->save();
 
+        $restaurant->load('users');
+
         return new RestaurantResource($restaurant);
     }
 
@@ -133,6 +137,8 @@ class Restaurants extends Controller
         if (Gate::denies('admin')) {
             abort(403);
         }
+
+        $restaurant->users()->detach();
 
         $restaurant->delete();
 

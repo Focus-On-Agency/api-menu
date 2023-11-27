@@ -21,8 +21,7 @@ class Categories extends Controller
                 ->categories()
                 ->orderBy('order')
                 ->get()
-            ),
-            'current_restaurant' => $restaurant,
+            )
         ];
     }
 

@@ -66,6 +66,12 @@ class Dishes extends Controller
              * @example true
              */
             'visible' => 'required|boolean',
+
+            /**
+             * @var array $allergens_id
+             * @example [1]
+             */
+            'allergens_id' => 'nullable|array|exists:allergens,id',
         ]);
 
         $dish = Dish::create([
@@ -79,6 +85,7 @@ class Dishes extends Controller
         ]);
 
         $restaurant->dishes()->attach($dish);
+        $dish->allergens()->sync($request->input('allergens_id', []));
 
         return new DishResource($dish);
     }
@@ -143,9 +150,15 @@ class Dishes extends Controller
 
             /**
              * @var $restaurants_id
-             * @example 1
+             * @example [1]
              */
             'restaurants_id' => 'nullable|array|exists:restaurants,id',
+
+            /**
+             * @var $allergens_id
+             * @example [1]
+             */
+            'allergens_id' => 'nullable|array|exists:allergens,id',
         ]);
 
         $dish->update([
@@ -159,6 +172,7 @@ class Dishes extends Controller
         ]);
 
         $dish->restaurants()->sync($request->input('restaurants_id', []));
+        $dish->allergens()->sync($request->input('allergens_id', []));
 
         $dish->load('restaurants');
 
@@ -175,6 +189,7 @@ class Dishes extends Controller
         }
 
         $dish->restaurants()->detach();
+        $dish->allergens()->detach();
 
         $dish->delete();
 
