@@ -169,7 +169,7 @@ class Users extends Controller
         }
 
 		if ($user->role == 'user') {
-			$user->restaurants()->syncWithoutDetaching($request->input('restaurants', []));
+			$user->restaurants()->sync($request->input('restaurants', []));
 		}
 
         $user->save();
