@@ -14,18 +14,15 @@ class Restaurant extends Model
         'address',
     ];
 
-    public function dishes()
-    {
-        return $this->belongsToMany(Dish::class, 'dishes_restaurants', 'restaurant_id', 'dish_id');
-    }
-
-    public function categories()
-    {
-        return $this->belongsToMany(Category::class, 'categories_restaurants', 'restaurant_id', 'category_id');
-    }
+    protected $with = ['menus'];
 
     public function users()
     {
         return $this->belongsToMany(User::class, 'restaurants_users', 'restaurant_id', 'user_id');
+    }
+
+    public function menus()
+    {
+        return $this->belongsToMany(Menu::class, 'menu_restaurants', 'restaurant_id', 'menu_id');
     }
 }

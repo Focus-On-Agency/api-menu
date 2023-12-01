@@ -5,22 +5,20 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class CategoriesRestaurants extends Model
+class MenuCategories extends Model
 {
     use HasFactory;
 
-    protected $table = 'categories_restaurants';
-
-    protected $timestamps = false;
+    public $timestamps = false;
 
     protected $fillable = [
-        'restaurant_id',
+        'meu_id',
         'category_id',
     ];
 
-    public function restaurant()
+    public function menu()
     {
-        return $this->belongsTo(Restaurant::class);
+        return $this->belongsTo(Menu::class);
     }
 
     public function category()

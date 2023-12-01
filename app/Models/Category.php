@@ -18,11 +18,6 @@ class Category extends Model
 
     protected $with = ['image'];
 
-    public function restaurants()
-    {
-        return $this->belongsToMany(Restaurant::class, 'categories_restaurants', 'category_id', 'restaurant_id');
-    }
-
     public function dishes()
     {
         return $this->hasMany(Dish::class);
@@ -31,5 +26,10 @@ class Category extends Model
     public function image()
     {
         return $this->belongsTo(Image::class);
+    }
+
+    public function menus()
+    {
+        return $this->belongsToMany(Menu::class, 'menu_category', 'category_id', 'menu_id');
     }
 }

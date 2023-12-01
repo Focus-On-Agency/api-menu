@@ -31,7 +31,6 @@ class Handler extends ExceptionHandler
 
     public function render($request, Throwable $exception)
     {
-        // Cattura le eccezioni HttpException con status code 403
         if ($exception instanceof HttpException) {
             return response()->json(['message' => $exception->getMessage()], $exception->getStatusCode());
         }

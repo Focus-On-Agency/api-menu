@@ -21,11 +21,6 @@ class Dish extends Model
 
     protected $with = ['allergens'];
 
-    public function restaurants()
-    {
-        return $this->belongsToMany(Restaurant::class, 'dishes_restaurants', 'dish_id', 'restaurant_id');
-    }
-
     public function category()
     {
         return $this->belongsTo(Category::class);

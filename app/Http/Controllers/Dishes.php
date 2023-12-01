@@ -6,6 +6,7 @@ use App\Models\Dish;
 use Illuminate\Http\Request;
 use App\Http\Resources\DishResource;
 use App\Models\Category;
+use App\Models\Menu;
 use App\Models\Restaurant;
 use Illuminate\Support\Facades\Gate;
 
@@ -15,11 +16,10 @@ class Dishes extends Controller
     /**
      * List
      */
-    public function index(Restaurant $restaurant, Category $category)
+    public function index(Category $category)
     {
-        return DishResource::collection($restaurant
+        return DishResource::collection($category
             ->dishes()
-            ->where('category_id', $category->id)
             ->orderBy('order')
             ->get()
         );
@@ -28,7 +28,7 @@ class Dishes extends Controller
     /**
      * Store
      */
-    public function store(Restaurant $restaurant, Category $category, Request $request)
+    public function store(Category $category, Request $request)
     {
         $request->validate([
             /**
@@ -84,7 +84,6 @@ class Dishes extends Controller
             'category_id' => $category->id,
         ]);
 
-        $restaurant->dishes()->attach($dish);
         $dish->allergens()->sync($request->input('allergens_id', []));
 
         return new DishResource($dish);
@@ -95,8 +94,6 @@ class Dishes extends Controller
      */
     public function show(Dish $dish)
     {
-        $dish->load('restaurants');
-
         return new DishResource($dish);
     }
 
@@ -149,12 +146,6 @@ class Dishes extends Controller
             'category_id' => 'nullable|exists:categories,id',
 
             /**
-             * @var $restaurants_id
-             * @example [1]
-             */
-            'restaurants_id' => 'nullable|array|exists:restaurants,id',
-
-            /**
              * @var $allergens_id
              * @example [1]
              */
@@ -171,10 +162,7 @@ class Dishes extends Controller
             'category_id' => $request->input('category_id'),
         ]);
 
-        $dish->restaurants()->sync($request->input('restaurants_id', []));
         $dish->allergens()->sync($request->input('allergens_id', []));
-
-        $dish->load('restaurants');
 
         return new DishResource($dish);
     }
@@ -188,7 +176,6 @@ class Dishes extends Controller
             abort(403, 'Unauthorized');
         }
 
-        $dish->restaurants()->detach();
         $dish->allergens()->detach();
 
         $dish->delete();

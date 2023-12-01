@@ -6,164 +6,187 @@ use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Http\Resources\CategoryResource;
 use App\Http\Resources\RestaurantResource;
+use App\Models\Menu;
 use App\Models\Restaurant;
 use Illuminate\Support\Facades\Gate;
 
 class Categories extends Controller
 {
-    /**
-     * List
-     */
-    public function index(Restaurant $restaurant)
-    {
-        return [
-            'categories' => CategoryResource::collection($restaurant
-                ->categories()
-                ->orderBy('order')
-                ->get()
-            )
-        ];
-    }
+	/**
+	 * List
+	 */
+	public function index(Restaurant $restaurant)
+	{
+		return [
+			'categories' => CategoryResource::collection($restaurant
+				->categories()
+				->orderBy('order')
+				->get()
+			)
+		];
+	}
 
-    /**
-     * Store
-     */
-    public function store(Restaurant $restaurant, Request $request)
-    {
-        if (Gate::denies('admin')) {
-            abort(403, 'Unauthorized');
-        }
+	/**
+	 * Store
+	 */
+	public function store(Restaurant $restaurant, Menu $menu, Request $request)
+	{
+		if (Gate::denies('admin')) {
+			abort(403, 'Unauthorized');
+		}
 
-        $request->validate([
-            /**
-             * @var string $name
-             * @example Pizza
-             */
-            'name' => 'required|string',
+		$request->validate([
+			/**
+			 * @var string $name
+			 * @example Pizza
+			 */
+			'name' => 'required|string',
 
-            /**
-             * @var int $order
-             * @example 1
-             */
-            'order' => 'required|integer',
+			/**
+			 * @var int $order
+			 * @example 1
+			 */
+			'order' => 'required|integer',
 
-            /**
-             * @var bool $visible
-             * @example true
-             */
-            'visible' => 'required|boolean',
+			/**
+			 * @var bool $visible
+			 * @example true
+			 */
+			'visible' => 'required|boolean',
 
-            /**
-             * @var $image
-             */
-            'image' => 'nullable|image',
-        ]);
+			/**
+			 * @var $image
+			 */
+			'image' => 'nullable|image',
+		]);
 
-        $category = Category::create([
-            'name' => $request->input('name'),
-            'order' => $request->input('order'),
-            'visible' => $request->input('visible'),
-        ]);
+		if ($restaurant->menus()->where('menu_id', $menu->id)->doesntExist()) {
+			abort(404, 'Menu not found for this restaurant');
+		}
 
-        if ($request->hasFile('image')) {
-            $image = $category->image()->create([
-                'path' => $request->file('image')->store('categories'),
-                'name' => $request->file('image')->getClientOriginalName(),
-            ]);
-    
-            $category->image_id = $image->id;
-            $category->save();
-        }
+		$category = Category::create([
+			'name' => $request->input('name'),
+			'order' => $request->input('order'),
+			'visible' => $request->input('visible'),
+		]);
 
-        $restaurant->categories()->attach($category);
+		if ($request->hasFile('image')) {
+			$image = $category->image()->create([
+				'path' => $request->file('image')->store('categories'),
+				'name' => $request->file('image')->getClientOriginalName(),
+			]);
+	
+			$category->image_id = $image->id;
+			$category->save();
+		}
 
-        return new CategoryResource($category);
-    }
+		$menu->categories()
+			->attach($category->id)
+		;
 
-    /**
-     * Show
-     */
-    public function show(Category $category)
-    {
-        $category->load('dishes');
-        $category->load('restaurants');
+		return new CategoryResource($category);
+	}
 
-        return new CategoryResource($category);
-    }
+	/**
+	 * Show
+	 */
+	public function show(Restaurant $restaurant, Menu $menu, Category $category)
+	{
+		if ($restaurant->menus()->where('menu_id', $menu->id)->doesntExist()) {
+			abort(404, 'Menu not found for this restaurant');
+		}
 
-    /**
-     * Update
-     */
-    public function update(Request $request, Category $category)
-    {
-        $request->validate([
-            /**
-             * @var string $name
-             * @example Pizza
-             */
-            'name' => 'required|string',
+		if ($menu->categories()->where('category_id', $category->id)->doesntExist()) {
+			abort(404, 'Category not found for this menu');
+		}
 
-            /**
-             * @var int $order
-             * @example 1
-             */
-            'order' => 'required|integer',
+		$category->load('dishes');
 
-            /**
-             * @var bool $visible
-             * @example true
-             */
-            'visible' => 'required|boolean',
+		return new CategoryResource($category);
+	}
 
-            /**
-             * @var $image
-             */
-            'image' => 'nullable|image',
+	/**
+	 * Update
+	 */
+	public function update(Restaurant $restaurant, Menu $menu, Category $category, Request $request)
+	{
+		if ($restaurant->menus()->where('menu_id', $menu->id)->doesntExist()) {
+			abort(404, 'Menu not found for this restaurant');
+		}
 
-            /**
-             * @var $restaurants_id
-             * @example 1
-             */
-            'restaurants_id' => 'nullable|array',
-        ]);
+		if ($menu->categories()->where('category_id', $category->id)->doesntExist()) {
+			abort(404, 'Category not found for this menu');
+		}
 
-        $category->update([
-            'name' => $request->input('name'),
-            'order' => $request->input('order'),
-            'visible' => $request->input('visible'),
-        ]);
+		$request->validate([
+			/**
+			 * @var string $name
+			 * @example Pizza
+			 */
+			'name' => 'required|string',
 
-        if ($request->hasFile('image')) {
-            $image = $category->image()->create([
-                'path' => $request->file('image')->store('categories'),
-                'name' => $request->file('image')->getClientOriginalName(),
-            ]);
-    
-            $category->image_id = $image->id;
-            $category->save();
-        }
+			/**
+			 * @var int $order
+			 * @example 1
+			 */
+			'order' => 'required|integer',
 
-        $category->restaurants()->sync($request->input('restaurants_id', []));
+			/**
+			 * @var bool $visible
+			 * @example true
+			 */
+			'visible' => 'required|boolean',
 
-        $category->load('dishes');
-        $category->load('restaurants');
+			/**
+			 * @var $image
+			 */
+			'image' => 'nullable|image',
+		]);
 
-        return new CategoryResource($category);
-    }
+		$category->update([
+			'name' => $request->input('name'),
+			'order' => $request->input('order'),
+			'visible' => $request->input('visible'),
+		]);
 
-    /**
-     * Delete
-     */
-    public function destroy(Category $category)
-    {
-        if (Gate::denies('admin')) {
-            abort(403, 'Unauthorized');
-        }
+		if ($request->hasFile('image')) {
+			$image = $category->image()->create([
+				'path' => $request->file('image')->store('categories'),
+				'name' => $request->file('image')->getClientOriginalName(),
+			]);
+	
+			$category->image_id = $image->id;
+			$category->save();
+		}
 
-        $category->restaurants()->detach();
+		$category->load('dishes');
 
-        $category->delete();
+		return new CategoryResource($category);
+	}
 
-        return response()->noContent();
-    }
+	/**
+	 * Delete
+	 */
+	public function destroy(Restaurant $restaurant, Menu $menu, Category $category)
+	{
+		if (Gate::denies('admin')) {
+			abort(403, 'Unauthorized');
+		}
+
+		if ($restaurant->menus()->where('menu_id', $menu->id)->doesntExist()) {
+			abort(404, 'Menu not found for this restaurant');
+		}
+
+		if ($menu->categories()->where('category_id', $category->id)->doesntExist()) {
+			abort(404, 'Category not found for this menu');
+		}
+
+		$menu->categories()
+			->detach($category->id)
+		;
+
+		$category->delete();
+
+		return response()->noContent();
+	}
 }

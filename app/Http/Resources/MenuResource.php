@@ -3,10 +3,9 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
-use App\Http\Resources\UserResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class RestaurantResource extends JsonResource
+class MenuResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,11 +15,9 @@ class RestaurantResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->id,
             'name' => $this->name,
-            'address' => $this->address,
-            'users' => UserResource::collection($this->whenLoaded('users')),
-            'menus' => MenuResource::collection($this->whenLoaded('menus')),
+            'icon' => $this->icon_name,
+            'categories' => CategoryResource::collection($this->whenLoaded('categories')),
         ];
     }
 }
