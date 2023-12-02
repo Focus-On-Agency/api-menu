@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\MenuResource;
 use App\Models\Menu;
+use App\Models\Restaurant;
 use Illuminate\Http\Request;
 
 class Menus extends Controller
@@ -48,9 +49,15 @@ class Menus extends Controller
     /**
      * Show
      */
-    public function show(Menu $menu)
+    public function show(Restaurant $restaurant, Menu $menu)
     {
-        $menu->load('categories');
+        if(!$restaurant->menus->contains($menu)) {
+            abort(404);
+        }
+
+        $menu->load(['categories' => function ($query) use ($restaurant) {
+            $query->where('restaurant_id', $restaurant->id);
+        }]);
 
         return new MenuResource($menu);
     }

@@ -32,7 +32,7 @@ class Dishes extends Controller
     {
         $request->validate([
             /**
-             * @var string $name
+             * @var $name
              * @example Pizza Margherita
              */
             'name' => 'required|string',

@@ -15,10 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name', 100);
             $table->string('icon_name', 100)->nullable();
-            $table->unsignedBigInteger('restaurant_id');
             $table->timestamps();
-
-            $table->foreign('restaurant_id')->references('id')->on('restaurants')->onDelete('cascade');
         });
     }
 

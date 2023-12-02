@@ -36,7 +36,9 @@ Route::group(["middleware" => ["auth:sanctum"]], function(){
 
 	Route::prefix('{restaurant}')->group(function () {
 
-		Route::prefix('{menu}')->group(function () {            
+		Route::prefix('{menu}')->group(function () { 
+			Route::get('/', [App\Http\Controllers\Menus::class, 'show']);
+
 			Route::prefix('category')->group(function () {
 				Route::get('/', [App\Http\Controllers\Categories::class, 'index']);
 				Route::get('/{category}', [App\Http\Controllers\Categories::class, 'show']);
@@ -49,7 +51,6 @@ Route::group(["middleware" => ["auth:sanctum"]], function(){
 	});
 
 	Route::prefix('menu')->group(function () {
-		Route::get('/{menu}', [App\Http\Controllers\Menus::class, 'show']);
 		Route::post('/', [App\Http\Controllers\Menus::class, 'store']);
 		Route::put('/{menu}', [App\Http\Controllers\Menus::class, 'update']);
 		Route::delete('/{menu}', [App\Http\Controllers\Menus::class, 'destroy']);
@@ -74,6 +75,12 @@ Route::group(["middleware" => ["auth:sanctum"]], function(){
 		Route::get('/{allergen}', [App\Http\Controllers\Allergens::class, 'show']);
 		Route::put('/{allergen}', [App\Http\Controllers\Allergens::class, 'update']);
 		Route::delete('/{allergen}', [App\Http\Controllers\Allergens::class, 'destroy']);
+	});
+
+	Route::prefix('duplicate')->group(function () {
+		Route::post('menu/{menu}', [App\Http\Controllers\Duplicates::class, 'menu']);
+		Route::post('category/{category}', [App\Http\Controllers\Duplicates::class, 'category']);
+		Route::post('dish/{dish}', [App\Http\Controllers\Duplicates::class, 'dish']);
 	});
 
 	

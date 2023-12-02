@@ -13,7 +13,8 @@ class Category extends Model
         'name',
         'order',
         'visible',
-        'image_id'
+        'image_id',
+        'restaurant_id'
     ];
 
     protected $with = ['image'];
@@ -31,5 +32,10 @@ class Category extends Model
     public function menus()
     {
         return $this->belongsToMany(Menu::class, 'menu_category', 'category_id', 'menu_id');
+    }
+
+    public function restaurant()
+    {
+        return $this->belongsTo(Restaurant::class);
     }
 }
