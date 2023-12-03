@@ -36,9 +36,11 @@ Route::group(["middleware" => ["auth:sanctum"]], function(){
 
 	Route::prefix('{restaurant}')->group(function () {
 
+		Route::get('menu-dishes/{menu}', [App\Http\Controllers\Menus::class, 'dishes']);
 		Route::prefix('{menu}')->group(function () { 
 			Route::get('/', [App\Http\Controllers\Menus::class, 'show']);
 
+			Route::post('category-order', [App\Http\Controllers\Categories::class, 'order']);
 			Route::prefix('category')->group(function () {
 				Route::get('/', [App\Http\Controllers\Categories::class, 'index']);
 				Route::get('/{category}', [App\Http\Controllers\Categories::class, 'show']);
@@ -57,6 +59,8 @@ Route::group(["middleware" => ["auth:sanctum"]], function(){
 	});
 
 	Route::prefix('{category}')->group(function () {
+
+		Route::post('dish-order', [App\Http\Controllers\Dishes::class, 'order']);
 		Route::prefix('dish')->group(function () {
 			Route::get('/', [App\Http\Controllers\Dishes::class, 'index']);
 			Route::post('/', [App\Http\Controllers\Dishes::class, 'store']);

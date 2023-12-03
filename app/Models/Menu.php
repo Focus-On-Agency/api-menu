@@ -23,4 +23,9 @@ class Menu extends Model
     {
         return $this->belongsToMany(Restaurant::class, 'menu_restaurants', 'menu_id', 'restaurant_id');
     }
+
+    public function dishes()
+    {
+        return $this->hasManyThrough(Dish::class, MenuCategories::class, 'menu_id', 'category_id', 'id', 'category_id');
+    }
 }

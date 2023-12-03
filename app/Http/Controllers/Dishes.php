@@ -86,6 +86,8 @@ class Dishes extends Controller
 
         $dish->allergens()->sync($request->input('allergens_id', []));
 
+        $dish->load('allergens');
+
         return new DishResource($dish);
     }
 
@@ -94,6 +96,8 @@ class Dishes extends Controller
      */
     public function show(Dish $dish)
     {
+        $dish->load('allergens');
+
         return new DishResource($dish);
     }
 
@@ -162,6 +166,8 @@ class Dishes extends Controller
             'category_id' => $request->input('category_id'),
         ]);
 
+        $dish->load('allergens');
+
         $dish->allergens()->sync($request->input('allergens_id', []));
 
         return new DishResource($dish);
@@ -181,5 +187,31 @@ class Dishes extends Controller
         $dish->delete();
 
         return response()->noContent();
+    }
+
+    /**
+     * Re-order
+     */
+    public function order(Category $category, Request $request)
+    {
+        $request->validate([
+            /**
+             * @var array $dishes
+             * @example [1, 2, 3]
+             */
+            'dishes' => 'required|array',
+        ]);
+
+        $dishes = $request->input('dishes');
+
+        foreach ($dishes as $order => $dishId) {
+            Dish::where('id', $dishId)->update(['order' => $order]);
+        }
+
+        return DishResource::collection($category
+            ->dishes()
+            ->orderBy('order')
+            ->get()
+        );
     }
 }

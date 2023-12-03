@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\DishResource;
 use App\Http\Resources\MenuResource;
 use App\Models\Menu;
 use App\Models\Restaurant;
@@ -109,5 +110,19 @@ class Menus extends Controller
         $menu->delete();
 
         return response()->noContent();
+    }
+
+    /**
+     * Show all dishes of a menu
+     */
+    public function dishes(Restaurant $restaurant, Menu $menu)
+    {
+        if(!$restaurant->menus->contains($menu)) {
+            abort(404);
+        }
+
+        $menu->load('dishes');
+
+        return new MenuResource($menu);
     }
 }

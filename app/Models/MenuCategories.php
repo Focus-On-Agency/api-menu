@@ -11,6 +11,8 @@ class MenuCategories extends Model
 
     public $timestamps = false;
 
+    protected $table = 'menu_category';
+
     protected $fillable = [
         'meu_id',
         'category_id',

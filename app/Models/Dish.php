@@ -19,8 +19,6 @@ class Dish extends Model
         'category_id',
     ];
 
-    protected $with = ['allergens'];
-
     public function category()
     {
         return $this->belongsTo(Category::class);

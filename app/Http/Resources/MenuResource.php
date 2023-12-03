@@ -19,6 +19,7 @@ class MenuResource extends JsonResource
             'name' => $this->name,
             'icon' => $this->icon_name,
             'categories' => CategoryResource::collection($this->whenLoaded('categories')),
+            'dishes' => DishResource::collection($this->whenLoaded('dishes')),
         ];
     }
 }
