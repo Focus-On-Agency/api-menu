@@ -63,16 +63,7 @@ class Categories extends Controller
 			/**
 			 * @var array dishes
 			 * @example 
-			 * [
-			 * 		[
-			 * 			'name' => 'Pizza Margherita',
-			 * 			'description' => 'Pizza met tomatensaus, mozzarella en ham',
-			 * 			'description_en' => 'Pizza with tomato sauce, mozzarella and ham',
-			 * 			'price' => 12.5,
-			 * 			'visible' => true,
-             *			'allergens_id' => [1, 2, 3],
-			 * 		]
-			 * ]
+			 * [1, 2, 3]
 			 */
 			'dishes' => 'nullable|array',
 		]);
@@ -97,15 +88,15 @@ class Categories extends Controller
 		}
 
 		if ($request->has('dishes')) {
-			foreach ($request->input('dishes') as $dish) {
-				$category->dishes()->create([
-					'name' => $dish['name'],
-					'description' => $dish['description'],
-					'description_en' => $dish['description_en'],
-					'price' => $dish['price'],
-					'visible' => $dish['visible'],
-				])->allergens()->attach($dish['allergens_id']);
+			$category->dishes()->attach($request->input('dishes'));
+
+			foreach ($request->input('dishes') as $order => $dish_id) {
+				$category->dishes()
+					->update(['order' => $order + 1])
+				;
 			}
+
+			$category->load('dishes');
 		}
 
 		$menu->categories()
