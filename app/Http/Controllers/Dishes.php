@@ -56,12 +56,6 @@ class Dishes extends Controller
             'price' => 'required|numeric',
 
             /**
-             * @var int $order
-             * @example 1
-             */
-            'order' => 'required|integer',
-
-            /**
              * @var bool $visible
              * @example true
              */
@@ -79,7 +73,7 @@ class Dishes extends Controller
             'description' => $request->input('description'),
             'description_en' => $request->input('description_en'),
             'price' => $request->input('price'),
-            'order' => $request->input('order'),
+            'order' => 0,
             'visible' => $request->input('visible'),
             'category_id' => $category->id,
         ]);

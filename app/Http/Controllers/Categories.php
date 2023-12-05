@@ -6,6 +6,7 @@ use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Http\Resources\CategoryResource;
 use App\Http\Resources\RestaurantResource;
+use App\Models\Dish;
 use App\Models\Menu;
 use App\Models\Restaurant;
 use Illuminate\Support\Facades\Gate;
@@ -88,12 +89,11 @@ class Categories extends Controller
 		}
 
 		if ($request->has('dishes')) {
-			$category->dishes()->attach($request->input('dishes'));
 
 			foreach ($request->input('dishes') as $order => $dish_id) {
-				$category->dishes()
-					->update(['order' => $order + 1])
-				;
+				$dish = Dish::find($dish_id);
+
+				
 			}
 
 			$category->load('dishes');
