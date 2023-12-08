@@ -85,7 +85,6 @@ class Categories extends Controller
 		}
 
 		if ($request->has('dishes')) {
-
 			foreach ($request->input('dishes') as $order => $dish_id) {
 				$dish = Dish::find($dish_id);
 

@@ -14,7 +14,7 @@ class Category extends Model
         'order',
         'visible',
         'image_id',
-        'restaurant_id'
+        'restaurant_id',
     ];
 
     protected $casts = [
