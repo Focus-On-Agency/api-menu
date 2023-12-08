@@ -16,6 +16,13 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('/auth/login', [App\Http\Controllers\Users::class, 'login']);
 
+Route::prefix('frontend')->group(function () {
+	Route::prefix('{restaurant}')->group(function () {
+		Route::get('/menu', App\Http\Controllers\Frontend\Menus::class);
+		Route::get('/menu/{menu}/categories', App\Http\Controllers\Frontend\Categories::class);
+	});
+});
+
 Route::group(["middleware" => ["auth:sanctum"]], function(){
    
 	Route::prefix('user')->group(function () {
@@ -56,11 +63,11 @@ Route::group(["middleware" => ["auth:sanctum"]], function(){
 						Route::delete('/{dish}', [App\Http\Controllers\Dishes::class, 'destroy']);
 					});
 				});
+			});
 
-				Route::prefix('dish')->group(function () {
-					Route::post('/', [App\Http\Controllers\Dishes::class, 'store']);
-					Route::put('/{dish}', [App\Http\Controllers\Dishes::class, 'update']);
-				});
+			Route::prefix('dish')->group(function () {
+				Route::post('/', [App\Http\Controllers\Dishes::class, 'store']);
+				Route::put('/{dish}', [App\Http\Controllers\Dishes::class, 'update']);
 			});
 		});
 		
@@ -87,11 +94,4 @@ Route::group(["middleware" => ["auth:sanctum"]], function(){
 	});
 
 	Route::delete('image/{image}', [App\Http\Controllers\Images::class, 'destroy']);
-
-	Route::prefix('frontend')->group(function () {
-		Route::prefix('{restaurant}')->group(function () {
-			Route::get('menu/', [App\Http\Controllers\Frontend\Menus::class, 'show']);
-			Route::get('menu/{menu}/categories', [App\Http\Controllers\Frontend\Menus::class, 'categories']);
-		});
-	});
 });
