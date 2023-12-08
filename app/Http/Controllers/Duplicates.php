@@ -77,23 +77,19 @@ class Duplicates extends Controller
             'menu_id' => 'required|exists:menus,id'
         ]);
 
-        $restaurant = Restaurant::find($request->restaurant_id);
         $menu = Menu::find($request->menu_id);
+        $menu->categories()->attach($category->id);
 
-        $newCategory = $category->replicate();
-        $newCategory->restaurant_id = $restaurant->id;
-        $newCategory->save();
-
-        $menu->categories()->attach($newCategory->id);
+        $restaurant = Restaurant::find($request->restaurant_id);
+        $restaurant->menus()->attach($menu->id);
 
         foreach ($category->dishes as $dish)
         {
-            $newDish = $dish->replicate();
-            $newDish->category_id = $newCategory->id;
-            $newDish->save();
+            $dish->categories()->attach($category->id);
+            $dish->menus()->attach($menu->id);
         }
 
-        return new CategoryResource($newCategory);
+        return new CategoryResource($category, $menu);
     }
 
     /**
@@ -110,16 +106,22 @@ class Duplicates extends Controller
              * @var int $category_id
              * @example 1
              */
+            'menu_id' => 'required|exists:menus,id',
+
+            /**
+             * @var int $category_id
+             * @example 1
+             */
             'category_id' => 'required|exists:categories,id'
         ]);
 
+        $menu = Menu::find($request->menu_id);
+        $dish->menus()->attach($menu->id);
+
         $category = Category::find($request->category_id);
+        $dish->categories()->attach($category->id);
 
-        $newDish = $dish->replicate();
-        $newDish->category_id = $category->id;
-        $newDish->save();
-
-        return new DishResource($newDish);
+        return new DishResource($dish, $menu, $category);
     }
 
 }

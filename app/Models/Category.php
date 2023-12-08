@@ -11,14 +11,8 @@ class Category extends Model
 
     protected $fillable = [
         'name',
-        'order',
-        'visible',
         'image_id',
         'restaurant_id',
-    ];
-
-    protected $casts = [
-        'visible' => 'boolean'
     ];
 
     protected $with = ['image'];
@@ -38,7 +32,10 @@ class Category extends Model
 
     public function menus()
     {
-        return $this->belongsToMany(Menu::class, 'menu_category', 'category_id', 'menu_id');
+        return $this->belongsToMany(Menu::class, 'menu_category', 'category_id', 'menu_id')
+            ->withPivot('order', 'visible')
+            ->orderByPivot('order')
+        ;
     }
 
     public function restaurant()

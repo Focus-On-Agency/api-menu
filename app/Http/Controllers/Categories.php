@@ -62,8 +62,6 @@ class Categories extends Controller
 
 		$category = Category::create([
 			'name' => $request->input('name'),
-			'visible' => false,
-			'order' => $menu->categories()->count() + 1,
 			'restaurant_id' => $restaurant->id,
 		]);
 
@@ -91,7 +89,10 @@ class Categories extends Controller
 		}
 
 		$menu->categories()
-			->attach($category->id)
+			->attach($category->id, [
+				'order' => $menu->categories()->count() + 1,
+				'visible' => false,
+			])
 		;
 
 		return new CategoryResource($category, $menu);
@@ -156,7 +157,6 @@ class Categories extends Controller
 
 		$category->update([
 			'name' => $request->input('name'),
-			'visible' => $request->input('visible'),
 		]);
 
 		if ($request->hasFile('image')) {
@@ -170,15 +170,19 @@ class Categories extends Controller
 		}
 
 		if ($request->has('dishes') && !empty($request->input('dishes'))) {
+			$syncData = [];
 			foreach ($request->input('dishes') as $order => $dish_id) {
-				$category->dishes()
-					->attach($dish_id, [
-						'order' => $order + 1,
-						'visible' => true,
-					])
-				;
+				$syncData[$dish_id] = ['order' => $order + 1];
 			}
+
+			$category->dishes()->sync($syncData);
 		}
+
+		$menu->categories()
+			->updateExistingPivot($category->id, [
+				'visible' => $request->input('visible'),
+			])
+		;
 
 		$category->load('dishes');
 
@@ -205,6 +209,8 @@ class Categories extends Controller
 		$menu->categories()
 			->detach($category->id)
 		;
+
+		$category->dishes()->detach();
 
 		$category->delete();
 
@@ -242,12 +248,31 @@ class Categories extends Controller
 			;
 		}
 
-		return [
-			'categories' => CategoryResource::collection($restaurant
-				->categories()
-				->orderBy('order')
-				->get()
-			)
-		];
+		return CategoryResource::collection($restaurant
+			->categories->map(function ($category) use ($menu) {
+				return new CategoryResource($category, $menu);
+        }));
+	}
+
+	/**
+	 * Change visibility
+	 */
+	public function visibility(Restaurant $restaurant, Menu $menu, Category $category)
+	{
+		if ($restaurant->menus()->where('menu_id', $menu->id)->doesntExist()) {
+			abort(404, 'Menu not found for this restaurant');
+		}
+
+		if ($menu->categories()->where('category_id', $category->id)->doesntExist()) {
+			abort(404, 'Category not found for this menu');
+		}
+
+		$menu->categories()
+			->updateExistingPivot($category->id, [
+				'visible' => !$category->menus()->where('menu_id', $menu->id)->first()->pivot->visible,
+			])
+		;
+
+		return new CategoryResource($category, $menu);
 	}
 }

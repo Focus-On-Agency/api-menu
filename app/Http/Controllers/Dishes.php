@@ -178,32 +178,26 @@ class Dishes extends Controller
     }
 
     /**
-     * Re-order
+     * Change visibility
      */
-    public function order(Restaurant $restaurant, Menu $menu, Category $category, Request $request)
+    public function visibility(Restaurant $restaurant, Menu $menu, Category $category, Dish $dish)
     {
         if ($restaurant->menus()->where('menu_id', $menu->id)->doesntExist()) {
-			abort(404, 'Menu not found for this restaurant');
-		}
-
-        $request->validate([
-            /**
-             * @var array $dishes
-             * @example [1, 2, 3]
-             */
-            'dishes' => 'required|array|exists:dishes,id',
-        ]);
-
-        $dishes = $request->input('dishes');
-
-        foreach ($dishes as $index => $dish) {
-            $category->dishes()->updateExistingPivot($dish, [
-                'order' => $index + 1,
-            ]);
+            abort(404, 'Menu not found for this restaurant');
         }
 
-        return DishResource::collection($category->dishes->map(function ($dish) use ($menu, $category) {
-            return new DishResource($dish, $menu, $category);
-        }));
+        if ($menu->categories()->where('category_id', $category->id)->doesntExist()) {
+            abort(404, 'Category not found for this menu');
+        }
+
+        if ($category->dishes()->where('dish_id', $dish->id)->doesntExist()) {
+            abort(404, 'Dish not found for this category');
+        }
+
+        $category->dishes()->updateExistingPivot($dish->id, [
+            'visible' => !$dish->categories()->where('category_id', $category->id)->first()->pivot->visible,
+        ]);
+
+        return new DishResource($dish, $menu, $category);
     }
 }
