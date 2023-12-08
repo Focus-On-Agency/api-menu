@@ -5,8 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Http\Resources\CategoryResource;
-use App\Http\Resources\RestaurantResource;
-use App\Models\Dish;
 use App\Models\Menu;
 use App\Models\Restaurant;
 use Illuminate\Support\Facades\Gate;
@@ -59,7 +57,7 @@ class Categories extends Controller
 			 * @example 
 			 * [1, 2, 3]
 			 */
-			'dishes' => 'nullable|array',
+			'dishes' => 'nullable',
 		]);
 
 		if ($restaurant->menus()->where('menu_id', $menu->id)->doesntExist()) {
