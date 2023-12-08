@@ -51,7 +51,6 @@ Route::group(["middleware" => ["auth:sanctum"]], function(){
 				Route::prefix('{category}')->group(function () {
 					Route::post('dish-order', [App\Http\Controllers\Dishes::class, 'order']);
 					Route::prefix('dish')->group(function () {
-						Route::put('/{dish}', [App\Http\Controllers\Dishes::class, 'update']);
 						Route::get('/{dish}', [App\Http\Controllers\Dishes::class, 'show']);
 						Route::delete('/{dish}', [App\Http\Controllers\Dishes::class, 'destroy']);
 					});
@@ -59,6 +58,7 @@ Route::group(["middleware" => ["auth:sanctum"]], function(){
 
 				Route::prefix('dish')->group(function () {
 					Route::post('/', [App\Http\Controllers\Dishes::class, 'store']);
+					Route::put('/{dish}', [App\Http\Controllers\Dishes::class, 'update']);
 				});
 			});
 		});
