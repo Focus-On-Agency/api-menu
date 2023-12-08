@@ -16,14 +16,8 @@ return new class extends Migration
             $table->string('name');
             $table->longText('description')->nullable();
             $table->longText('description_en')->nullable();
-            $table->integer('price');
-            $table->integer('order')->default(0);
-            $table->boolean('visible')->default(true);
-            $table->unsignedBigInteger('category_id');
 
             $table->timestamps();
-
-            $table->foreign('category_id')->references('id')->on('categories');
         });
     }
 

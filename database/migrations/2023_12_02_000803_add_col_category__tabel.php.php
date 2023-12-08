@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::table('categories', function (Blueprint $table) {
             $table->unsignedBigInteger('restaurant_id')->after('visible');
 
-            $table->foreign('restaurant_id')->references('id')->on('restaurants')->onDelete('cascade');
+            $table->foreign('restaurant_id')->references('id')->on('restaurants');
         });
     }
 

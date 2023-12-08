@@ -11,13 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('menu_category', function (Blueprint $table) {
+        Schema::create('category_dish', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('menu_id');
             $table->unsignedBigInteger('category_id');
+            $table->unsignedBigInteger('dish_id');
+            $table->integer('order')->default(0);
+            $table->boolean('visible')->default(true);
 
-            $table->foreign('menu_id')->references('id')->on('menus');
             $table->foreign('category_id')->references('id')->on('categories');
+            $table->foreign('dish_id')->references('id')->on('dishes');
         });
     }
 
@@ -26,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        //
+        Schema::dropIfExists('category_dish');
     }
 };

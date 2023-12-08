@@ -51,12 +51,6 @@ class Categories extends Controller
 			'name' => 'required|string',
 
 			/**
-			 * @var bool $visible
-			 * @example true
-			 */
-			'visible' => 'required|boolean',
-
-			/**
 			 * @var $image
 			 */
 			'image' => 'nullable|image',
@@ -75,7 +69,9 @@ class Categories extends Controller
 
 		$category = Category::create([
 			'name' => $request->input('name'),
-			'visible' => $request->input('visible'),
+			'visible' => true,
+			'order' => $menu->categories()->count() + 1,
+			'restaurant_id' => $restaurant->id,
 		]);
 
 		if ($request->hasFile('image')) {
@@ -93,7 +89,7 @@ class Categories extends Controller
 			foreach ($request->input('dishes') as $order => $dish_id) {
 				$dish = Dish::find($dish_id);
 
-				
+
 			}
 
 			$category->load('dishes');

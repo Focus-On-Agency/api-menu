@@ -17,6 +17,10 @@ class Category extends Model
         'restaurant_id'
     ];
 
+    protected $casts = [
+        'visible' => 'boolean'
+    ];
+
     protected $with = ['image'];
 
     public function dishes()

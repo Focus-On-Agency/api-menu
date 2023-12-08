@@ -13,19 +13,17 @@ class Dish extends Model
         'name',
         'description',
         'description_en',
-        'price',
-        'order',
-        'visible',
-        'category_id',
     ];
 
-    public function category()
+    public function categories()
     {
-        return $this->belongsTo(Category::class);
+        return $this->belongsToMany(Category::class, 'category_dish', 'dish_id', 'category_id')->withPivot('order', 'visible');
     }
 
     public function allergens()
     {
         return $this->belongsToMany(Allergen::class, 'allergens_dishes', 'dish_id', 'allergen_id');
     }
+
+
 }
