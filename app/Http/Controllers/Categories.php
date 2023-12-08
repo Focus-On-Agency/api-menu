@@ -20,15 +20,11 @@ class Categories extends Controller
 			abort(404, 'Menu not found for this restaurant');
 		}
 
-		return [
-			'categories' => CategoryResource::collection($restaurant
-				->menus()
-				->where('menu_id', $menu->id)
-				->first()
-				->categories()
-				->get()
-			)
-		];
+		return CategoryResource::collection($restaurant
+			->menus()->where('menu_id', $menu->id)->first()
+			->categories->map(function ($category) use ($menu) {
+				return new CategoryResource($category, $menu);
+        }));
 	}
 
 	/**
