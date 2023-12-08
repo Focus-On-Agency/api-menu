@@ -42,9 +42,9 @@ class DatabaseSeeder extends Seeder
 		]);
 
 		DB::table('menus')->insert([
-			['name' => 'Food', 'icon_name' => 'chopstick'],
-			['name' => 'Wine', 'icon_name' => 'wine'],
-			['name' => 'Drink', 'icon_name' => 'drink']
+			['name' => 'Menu', 'icon_name' => 'chopstick'],
+			['name' => 'Wine List', 'icon_name' => 'wine'],
+			['name' => 'Drink List', 'icon_name' => 'drink']
 		]);
 
 		DB::table('menu_restaurants')->insert([
