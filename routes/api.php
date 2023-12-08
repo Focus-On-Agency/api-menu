@@ -45,7 +45,7 @@ Route::group(["middleware" => ["auth:sanctum"]], function(){
 				Route::get('/', [App\Http\Controllers\Categories::class, 'index']);
 				Route::get('/{category}', [App\Http\Controllers\Categories::class, 'show']);
 				Route::post('/', [App\Http\Controllers\Categories::class, 'store']);
-				Route::put('/{category}', [App\Http\Controllers\Categories::class, 'update']);
+				Route::post('/{category}', [App\Http\Controllers\Categories::class, 'update']);
 				Route::delete('/{category}', [App\Http\Controllers\Categories::class, 'destroy']);
 
 				Route::prefix('{category}')->group(function () {

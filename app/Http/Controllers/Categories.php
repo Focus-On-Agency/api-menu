@@ -145,6 +145,13 @@ class Categories extends Controller
 			 * @var $image
 			 */
 			'image' => 'nullable|image',
+
+			/**
+			 * @var array dishes
+			 * @example 
+			 * [1, 2, 3]
+			 */
+			'dishes' => 'nullable',
 		]);
 
 		$category->update([
@@ -160,6 +167,17 @@ class Categories extends Controller
 	
 			$category->image_id = $image->id;
 			$category->save();
+		}
+
+		if ($request->has('dishes') && !empty($request->input('dishes'))) {
+			foreach ($request->input('dishes') as $order => $dish_id) {
+				$category->dishes()
+					->attach($dish_id, [
+						'order' => $order + 1,
+						'visible' => true,
+					])
+				;
+			}
 		}
 
 		$category->load('dishes');
