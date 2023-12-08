@@ -3,19 +3,20 @@
 namespace App\Http\Resources;
 
 use App\Models\Category;
+use App\Models\Menu;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class DishResource extends JsonResource
 {
-    protected $menuId;
-    protected $categoryId;
+    protected Menu $menu;
+    protected Category $category;
 
-    public function __construct($resource, $menuId, $categoryId)
+    public function __construct($resource, Menu $menu, Category $category)
     {
         parent::__construct($resource);
-        $this->menuId = $menuId;
-        $this->categoryId = $categoryId;
+        $this->menu = $menu;
+        $this->category = $category;
     }
 
     /**
@@ -25,14 +26,6 @@ class DishResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $categoryPivot = $this->whenLoaded('categories', function () {
-            return $this->categories->where('id', $this->categoryId)->first()->pivot ?? null;
-        });
-
-        $menuPivot = $this->whenLoaded('menus', function () {
-            return $this->menus->where('id', $this->menuId)->first()->pivot ?? null;
-        });
-
         return [
             'id' => $this->id,
             'name' => $this->name,
@@ -40,9 +33,9 @@ class DishResource extends JsonResource
                 'it' => $this->description,
                 'en' => $this->description_en,
             ],
-            'price' => $menuPivot->price,
-            'order' => $categoryPivot->order,
-            'visible' => $categoryPivot->visible,
+            'price' => $this->menu->dishes()->where('dish_id', $this->id)->first()->pivot->price / 100,
+            'order' => $this->category->dishes()->where('dish_id', $this->id)->first()->pivot->order,
+            'visible' => $this->category->dishes()->where('dish_id', $this->id)->first()->pivot->visible,
             'allergeens' => AllergenResource::collection($this->whenLoaded('allergens')),
         ];
     }

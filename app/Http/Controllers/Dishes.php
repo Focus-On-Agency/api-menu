@@ -89,14 +89,14 @@ class Dishes extends Controller
         ]);
 
         $menu->dishes()->attach($dish->id, [
-            'price' => $request->input('price'),
+            'price' => $request->input('price') * 100,
         ]);
 
         $dish->allergens()->sync($request->input('allergens_id', []));
 
         $dish->load('allergens');
 
-        return new DishResource($dish);
+        return new DishResource($dish, $menu, $category);
     }
 
     /**
