@@ -12,7 +12,7 @@ class DishResource extends JsonResource
     protected Menu $menu;
     protected Category $category;
 
-    public function __construct($resource, Menu $menu, Category $category)
+    public function __construct($resource, Menu $menu, Category $category = null)
     {
         parent::__construct($resource);
         $this->menu = $menu;
@@ -34,8 +34,8 @@ class DishResource extends JsonResource
                 'en' => $this->description_en,
             ],
             'price' => $this->menu->dishes()->where('dish_id', $this->id)->first()->pivot->price / 100,
-            'order' => $this->category->dishes()->where('dish_id', $this->id)->first()->pivot->order,
-            'visible' => $this->category->dishes()->where('dish_id', $this->id)->first()->pivot->visible,
+            'order' =>  $this->category ? $this->category->dishes()->where('dish_id', $this->id)->first()->pivot->order : null,
+            'visible' =>  $this->category ? $this->category->dishes()->where('dish_id', $this->id)->first()->pivot->visible : null,
             'allergeens' => AllergenResource::collection($this->whenLoaded('allergens')),
         ];
     }
