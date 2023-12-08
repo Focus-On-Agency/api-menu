@@ -28,7 +28,6 @@ class Categories extends Controller
 				->where('menu_id', $menu->id)
 				->first()
 				->categories()
-				->orderBy('order')
 				->get()
 			)
 		];
@@ -84,11 +83,14 @@ class Categories extends Controller
 			$category->save();
 		}
 
-		if ($request->has('dishes')) {
+		if ($request->has('dishes') && !empty($request->input('dishes'))) {
 			foreach ($request->input('dishes') as $order => $dish_id) {
-				$dish = Dish::find($dish_id);
-
-
+				$category->dishes()
+					->attach($dish_id, [
+						'order' => $order + 1,
+						'visible' => true,
+					])
+				;
 			}
 
 			$category->load('dishes');
@@ -140,12 +142,6 @@ class Categories extends Controller
 			'name' => 'required|string',
 
 			/**
-			 * @var int $order
-			 * @example 1
-			 */
-			'order' => 'required|integer',
-
-			/**
 			 * @var bool $visible
 			 * @example true
 			 */
@@ -159,7 +155,6 @@ class Categories extends Controller
 
 		$category->update([
 			'name' => $request->input('name'),
-			'order' => $request->input('order'),
 			'visible' => $request->input('visible'),
 		]);
 

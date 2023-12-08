@@ -16,6 +16,7 @@ class MenuCategories extends Model
     protected $fillable = [
         'meu_id',
         'category_id',
+        'order',
     ];
 
     public function menu()
