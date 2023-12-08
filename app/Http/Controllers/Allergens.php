@@ -76,13 +76,13 @@ class Allergens extends Controller
              * @var string $icon
              * @example gluten.svg
              */
-            'icon' => 'required|string',
+            'icon' => 'nullable|string',
 
             /**
              * @var string $color
              * @example #FF0000
              */
-            'color' => 'required|string',
+            'color' => 'nullable|string',
 
             /**
              * @var string $description
@@ -101,6 +101,8 @@ class Allergens extends Controller
      */
     public function destroy(Allergen $allergen)
     {
+        $allergen->dishes()->detach();
+        
         $allergen->delete();
 
         return response()->noContent();
