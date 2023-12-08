@@ -86,6 +86,12 @@ Route::group(["middleware" => ["auth:sanctum"]], function(){
 		Route::post('dish/{dish}', [App\Http\Controllers\Duplicates::class, 'dish']);
 	});
 
-	
 	Route::delete('image/{image}', [App\Http\Controllers\Images::class, 'destroy']);
+
+	Route::prefix('frontend')->group(function () {
+		Route::prefix('{restaurant}')->group(function () {
+			Route::get('menu/', [App\Http\Controllers\Frontend\Menus::class, 'show']);
+			Route::get('menu/{menu}/categories', [App\Http\Controllers\Frontend\Menus::class, 'categories']);
+		});
+	});
 });

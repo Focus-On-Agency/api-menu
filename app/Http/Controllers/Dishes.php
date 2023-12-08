@@ -39,7 +39,7 @@ class Dishes extends Controller
              * @var string $description_en
              * @example Pizza with tomato sauce, mozzarella and ham
              */
-            'description_en' => 'required|string',
+            'description_en' => 'nullable|string',
 
             /**
              * @var float $price
@@ -115,7 +115,7 @@ class Dishes extends Controller
              * @var string $description_en
              * @example Pizza with tomato sauce, mozzarella and ham
              */
-            'description_en' => 'required|string',
+            'description_en' => 'nullable|string',
 
             /**
              * @var float $price
