@@ -100,7 +100,7 @@ class Categories extends Controller
 			->attach($category->id)
 		;
 
-		return new CategoryResource($category);
+		return new CategoryResource($category, $menu);
 	}
 
 	/**
@@ -118,7 +118,7 @@ class Categories extends Controller
 
 		$category->load('dishes');
 
-		return new CategoryResource($category);
+		return new CategoryResource($category, $menu);
 	}
 
 	/**
@@ -170,7 +170,7 @@ class Categories extends Controller
 
 		$category->load('dishes');
 
-		return new CategoryResource($category);
+		return new CategoryResource($category, $menu);
 	}
 
 	/**

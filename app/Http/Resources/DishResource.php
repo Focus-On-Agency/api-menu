@@ -10,7 +10,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 class DishResource extends JsonResource
 {
     protected Menu $menu;
-    protected Category $category;
+    protected ?Category $category;
 
     public function __construct($resource, Menu $menu, Category $category = null)
     {
