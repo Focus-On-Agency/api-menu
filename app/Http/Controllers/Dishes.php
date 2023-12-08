@@ -16,11 +16,18 @@ class Dishes extends Controller
     /**
      * List
      */
-    public function index(Category $category)
+    public function index(Restaurant $restaurant, Menu $menu, Category $category)
     {
+        if ($restaurant->menus()->where('menu_id', $menu->id)->doesntExist()) {
+			abort(404, 'Menu not found for this restaurant');
+		}
+
+        if ($menu->categories()->where('category_id', $category->id)->doesntExist()) {
+            abort(404, 'Category not found for this menu');
+        }
+
         return DishResource::collection($category
             ->dishes()
-            ->orderBy('order')
             ->get()
         );
     }
@@ -28,8 +35,16 @@ class Dishes extends Controller
     /**
      * Store
      */
-    public function store(Category $category, Request $request)
+    public function store(Restaurant $restaurant, Menu $menu, Category $category, Request $request)
     {
+        if ($restaurant->menus()->where('menu_id', $menu->id)->doesntExist()) {
+			abort(404, 'Menu not found for this restaurant');
+		}
+
+        if ($menu->categories()->where('category_id', $category->id)->doesntExist()) {
+            abort(404, 'Category not found for this menu');
+        }
+
         $request->validate([
             /**
              * @var $name
@@ -56,12 +71,6 @@ class Dishes extends Controller
             'price' => 'required|numeric',
 
             /**
-             * @var bool $visible
-             * @example true
-             */
-            'visible' => 'required|boolean',
-
-            /**
              * @var array $allergens_id
              * @example [1]
              */
@@ -72,10 +81,15 @@ class Dishes extends Controller
             'name' => $request->input('name'),
             'description' => $request->input('description'),
             'description_en' => $request->input('description_en'),
+        ]);
+
+        $category->dishes()->attach($dish->id, [
+            'order' => $category->dishes()->count() + 1,
+            'visible' => true,
+        ]);
+
+        $menu->dishes()->attach($dish->id, [
             'price' => $request->input('price'),
-            'order' => 0,
-            'visible' => $request->input('visible'),
-            'category_id' => $category->id,
         ]);
 
         $dish->allergens()->sync($request->input('allergens_id', []));
@@ -88,11 +102,19 @@ class Dishes extends Controller
     /**
      * Show
      */
-    public function show(Dish $dish)
+    public function show(Restaurant $restaurant, Menu $menu, Category $category, Dish $dish)
     {
+        if ($restaurant->menus()->where('menu_id', $menu->id)->doesntExist()) {
+			abort(404, 'Menu not found for this restaurant');
+		}
+
+        if ($menu->categories()->where('category_id', $category->id)->doesntExist()) {
+            abort(404, 'Category not found for this menu');
+        }
+
         $dish->load('allergens');
 
-        return new DishResource($dish);
+        return new DishResource($dish, $category->id, $menu->id);
     }
 
     /**

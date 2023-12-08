@@ -47,6 +47,17 @@ Route::group(["middleware" => ["auth:sanctum"]], function(){
 				Route::post('/', [App\Http\Controllers\Categories::class, 'store']);
 				Route::put('/{category}', [App\Http\Controllers\Categories::class, 'update']);
 				Route::delete('/{category}', [App\Http\Controllers\Categories::class, 'destroy']);
+
+				Route::prefix('{category}')->group(function () {
+					Route::post('dish-order', [App\Http\Controllers\Dishes::class, 'order']);
+					Route::prefix('dish')->group(function () {
+						Route::get('/', [App\Http\Controllers\Dishes::class, 'index']);
+						Route::post('/', [App\Http\Controllers\Dishes::class, 'store']);
+						Route::put('/{dish}', [App\Http\Controllers\Dishes::class, 'update']);
+						Route::get('/{dish}', [App\Http\Controllers\Dishes::class, 'show']);
+						Route::delete('/{dish}', [App\Http\Controllers\Dishes::class, 'destroy']);
+					});
+				});
 			});
 		});
 		
@@ -58,20 +69,13 @@ Route::group(["middleware" => ["auth:sanctum"]], function(){
 		Route::delete('/{menu}', [App\Http\Controllers\Menus::class, 'destroy']);
 	});
 
-	Route::prefix('{category}')->group(function () {
+	//Route::prefix('{category}')->group(function () {
 
-		Route::post('dish-order', [App\Http\Controllers\Dishes::class, 'order']);
-		Route::prefix('dish')->group(function () {
-			Route::get('/', [App\Http\Controllers\Dishes::class, 'index']);
-			Route::post('/', [App\Http\Controllers\Dishes::class, 'store']);
-		});
-	});
-
-	Route::prefix('dish')->group(function () {
-		Route::get('/{dish}', [App\Http\Controllers\Dishes::class, 'show']);
-		Route::put('/{dish}', [App\Http\Controllers\Dishes::class, 'update']);
-		Route::delete('/{dish}', [App\Http\Controllers\Dishes::class, 'destroy']);
-	});
+	//	Route::prefix('dish')->group(function () {
+	//		Route::get('/', [App\Http\Controllers\Dishes::class, 'index']);
+	//		Route::post('/', [App\Http\Controllers\Dishes::class, 'store']);
+	//	});
+	//});
 
 	Route::prefix('allergen')->group(function () {
 		Route::get('/', [App\Http\Controllers\Allergens::class, 'index']);

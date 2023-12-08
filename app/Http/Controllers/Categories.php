@@ -68,7 +68,7 @@ class Categories extends Controller
 
 		$category = Category::create([
 			'name' => $request->input('name'),
-			'visible' => true,
+			'visible' => false,
 			'order' => $menu->categories()->count() + 1,
 			'restaurant_id' => $restaurant->id,
 		]);

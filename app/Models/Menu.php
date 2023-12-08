@@ -17,7 +17,6 @@ class Menu extends Model
 	public function categories()
 	{
 		return $this->belongsToMany(Category::class, 'menu_category', 'menu_id', 'category_id')
-			->where('visible', true)
 			->withPivot('order')
 			->orderByPivot('order')
 		;
@@ -30,9 +29,7 @@ class Menu extends Model
 
 	public function dishes()
 	{
-		return $this->belongsToMany(Dish::class, 'menu_dishes', 'menu_id', 'dish_id')
-			->orderBy('order')
-			->where('visible', true)
+		return $this->belongsToMany(Dish::class, 'menu_dish', 'menu_id', 'dish_id')
 			->withPivot('price')
 		;
 	}

@@ -8,6 +8,16 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class DishResource extends JsonResource
 {
+    protected $menuId;
+    protected $categoryId;
+
+    public function __construct($resource, $menuId, $categoryId)
+    {
+        parent::__construct($resource);
+        $this->menuId = $menuId;
+        $this->categoryId = $categoryId;
+    }
+
     /**
      * Transform the resource into an array.
      *
@@ -15,6 +25,14 @@ class DishResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $categoryPivot = $this->whenLoaded('categories', function () {
+            return $this->categories->where('id', $this->categoryId)->first()->pivot ?? null;
+        });
+
+        $menuPivot = $this->whenLoaded('menus', function () {
+            return $this->menus->where('id', $this->menuId)->first()->pivot ?? null;
+        });
+
         return [
             'id' => $this->id,
             'name' => $this->name,
@@ -22,11 +40,9 @@ class DishResource extends JsonResource
                 'it' => $this->description,
                 'en' => $this->description_en,
             ],
-            'price' => $this->price,
-            'order' => $this->order,
-            'visible' => $this->visible,
-            'category' => new CategoryResource(Category::find($this->category_id)),
-            'restaurants' => RestaurantResource::collection($this->whenLoaded('restaurants')),
+            'price' => $menuPivot->price,
+            'order' => $categoryPivot->order,
+            'visible' => $categoryPivot->visible,
             'allergeens' => AllergenResource::collection($this->whenLoaded('allergens')),
         ];
     }
