@@ -21,7 +21,11 @@ class MenuResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'icon' => $this->icon_name,
-            'categories' => CategoryResource::collection($this->whenLoaded('categories')),
+            'categories' => $this->whenLoaded('categories', function () use ($menu) {
+                return $this->categories->map(function ($category) use ($menu) {
+                    return new CategoryResource($category, $menu);
+                });
+            }),
             'dishes' => $this->whenLoaded('dishes', function () use ($menu) {
                 return $this->dishes->map(function ($dish) use ($menu) {
                     return new DishResource($dish, $menu);
