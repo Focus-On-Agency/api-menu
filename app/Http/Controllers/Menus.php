@@ -118,6 +118,8 @@ class Menus extends Controller
     public function destroy(Menu $menu)
     {
         $menu->restaurants()->detach();
+        $menu->categories()->detach();
+        $menu->dishes()->detach();
 
         $menu->delete();
 

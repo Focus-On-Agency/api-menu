@@ -138,6 +138,7 @@ class Restaurants extends Controller
             abort(403);
         }
 
+        $restaurant->menus()->detach();
         $restaurant->users()->detach();
 
         $restaurant->delete();
