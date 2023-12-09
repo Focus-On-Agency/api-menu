@@ -51,7 +51,7 @@ class Dishes extends Controller
              * @var array $allergens_id
              * @example [1]
              */
-            'allergens_id' => 'nullable|array|exists:allergens,id',
+            'allergens_id' => 'nullable',
         ]);
 
         $dish = Dish::create([
@@ -64,6 +64,12 @@ class Dishes extends Controller
             'price' => $request->input('price') * 100,
         ]);
 
+        // converto allergens_id in un array se è un json
+        if (is_string($request->input('allergens_id'))) {
+           $request->merge([
+               'allergens_id' => json_decode($request->input('allergens_id')),
+           ]);
+        }
         $dish->allergens()->sync($request->input('allergens_id', []));
 
         $dish->load('allergens');
