@@ -7,6 +7,13 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class AllergenResource extends JsonResource
 {
+    protected bool $hiddenInfo;
+
+    public function __construct($resource, bool $hiddenInfo = false)
+    {
+        parent::__construct($resource);
+        $this->hiddenInfo = $hiddenInfo;
+    }
     /**
      * Transform the resource into an array.
      *
@@ -15,7 +22,7 @@ class AllergenResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->id,
+            'id' => $this->when(!$this->hiddenInfo, $this->id),
             'name' => $this->name,
             'icon' => $this->icon,
             'color' => $this->color,

@@ -11,12 +11,14 @@ class DishResource extends JsonResource
 {
     protected Menu $menu;
     protected ?Category $category;
+    protected bool $hiddenInfo;
 
-    public function __construct($resource, Menu $menu, Category $category = null)
+    public function __construct($resource, Menu $menu, Category $category = null, bool $hiddenInfo = false)
     {
         parent::__construct($resource);
         $this->menu = $menu;
         $this->category = $category;
+        $this->hiddenInfo = $hiddenInfo;
     }
 
     /**
@@ -27,16 +29,20 @@ class DishResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->id,
+            'id' => $this->when(!$this->hiddenInfo, $this->id),
             'name' => $this->name,
             'description' => [
                 'it' => $this->description,
                 'en' => $this->description_en,
             ],
             'price' => $this->menu->dishes()->where('dish_id', $this->id)->first()->pivot->price / 100,
-            'order' =>  $this->category ? $this->category->dishes()->where('dish_id', $this->id)->first()->pivot->order : null,
-            'visible' =>  $this->category ? $this->category->dishes()->where('dish_id', $this->id)->first()->pivot->visible : null,
-            'allergeens' => AllergenResource::collection($this->whenLoaded('allergens')),
+            'order' =>  $this->when(!$this->hiddenInfo, $this->category ? $this->category->dishes()->where('dish_id', $this->id)->first()->pivot->order : null),
+            'visible' =>  $this->when(!$this->hiddenInfo, $this->category ? $this->category->dishes()->where('dish_id', $this->id)->first()->pivot->visible : null),
+            'allergeens' => $this->whenLoaded('allergens', function () {
+                return $this->allergens->map(function ($allergen) {
+                    return new AllergenResource($allergen, $this->hiddenInfo);
+                });
+            }),
         ];
     }
 }

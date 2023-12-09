@@ -130,12 +130,6 @@ class Dishes extends Controller
             'price' => 'required|numeric',
 
             /**
-             * @var bool $visible
-             * @example true
-             */
-            'visible' => 'required|boolean',
-
-            /**
              * @var $allergens_id
              * @example [1]
              */
