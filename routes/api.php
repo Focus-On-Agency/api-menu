@@ -46,6 +46,8 @@ Route::group(["middleware" => ["auth:sanctum"]], function(){
 		Route::get('menu-dishes/{menu}', [App\Http\Controllers\Menus::class, 'dishes']);
 		Route::prefix('{menu}')->group(function () { 
 			Route::get('/', [App\Http\Controllers\Menus::class, 'show']);
+			Route::delete('/{menu}', [App\Http\Controllers\Menus::class, 'destroy']);
+
 
 			Route::post('category-order', [App\Http\Controllers\Categories::class, 'order']);
 			Route::prefix('category')->group(function () {
@@ -76,7 +78,6 @@ Route::group(["middleware" => ["auth:sanctum"]], function(){
 	Route::prefix('menu')->group(function () {
 		Route::post('/', [App\Http\Controllers\Menus::class, 'store']);
 		Route::put('/{menu}', [App\Http\Controllers\Menus::class, 'update']);
-		Route::delete('/{menu}', [App\Http\Controllers\Menus::class, 'destroy']);
 	});
 
 	Route::prefix('allergen')->group(function () {

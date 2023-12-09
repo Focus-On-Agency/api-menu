@@ -115,13 +115,16 @@ class Menus extends Controller
     /**
      * Destroy
      */
-    public function destroy(Menu $menu)
-    {
-        $menu->restaurants()->detach();
-        $menu->categories()->detach();
-        $menu->dishes()->detach();
+    public function destroy(Restaurant $restaurant, Menu $menu)
+    {  
+        $restaurant->menus()->where('menu_id', $menu->id)->frist()->categories()->detach();
+        $restaurant->menus()->where('menu_id', $menu->id)->frist()->dishes()->detach();
+        
+        $restaurant->menus()->detach($menu->id);
 
-        $menu->delete();
+        if ($menu->restaurants()->count() > 0) {
+            $menu->delete();
+        }
 
         return response()->noContent();
     }
