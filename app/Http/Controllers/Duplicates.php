@@ -90,7 +90,7 @@ class Duplicates extends Controller
                 'visible' => false,
             ]);
             $dish->menus()->attach($menu->id, [
-                'peice' => $dish->menus->price,
+                'peice' => $dish->menus->pivot->price,
             ]);
         }
 
@@ -122,7 +122,7 @@ class Duplicates extends Controller
 
         $menu = Menu::find($request->menu_id);
         $dish->menus()->attach($menu->id, [
-            'price' => $dish->menus->price,
+            'peice' => $dish->menus->pivot->price,
         ]);
 
         $category = Category::find($request->category_id);
