@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Models\Menu;
@@ -25,10 +26,10 @@ class FrontendCategoryResource extends JsonResource
     {
         return [
             'name' => $this->name,
-            'image_path' => $this->image->path,
-            'iamge_name' => $this->image->name,
+            'image_path' => $this->image?->path,
+            'iamge_name' => $this->image?->name,
             'dishes' => $this->dishes->map(function ($dish) {
-                return new DishResource($dish, $this->menu);
+                return new DishResource($dish, $this->menu, Category::find($this->id));
             }),
         ];
     }

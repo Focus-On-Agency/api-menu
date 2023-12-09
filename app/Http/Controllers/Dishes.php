@@ -156,7 +156,7 @@ class Dishes extends Controller
     /**
      * Delete
      */
-    public function destroy(Restaurant $restaurant, Menu $menu, Dish $dish)
+    public function destroy(Restaurant $restaurant, Menu $menu, Category $category, Dish $dish)
     {
         if (Gate::denies('admin')) {
             abort(403, 'Unauthorized');
@@ -166,13 +166,15 @@ class Dishes extends Controller
 			abort(404, 'Menu not found for this restaurant');
 		}
 
-        $dish->allergens()->detach();
+        $category->dishes()->detach($dish->id);
 
-        $dish->categories()->detach();
+        $menu->dishes()->detach($dish->id);
 
-        $dish->menus()->detach();
+        if ($dish->menus()->count() === 0) {
+            $dish->allergens()->detach();
 
-        $dish->delete();
+            $dish->delete();
+        }
 
         return response()->noContent();
     }
