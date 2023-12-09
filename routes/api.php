@@ -46,7 +46,7 @@ Route::group(["middleware" => ["auth:sanctum"]], function(){
 		Route::get('menu-dishes/{menu}', [App\Http\Controllers\Menus::class, 'dishes']);
 		Route::prefix('{menu}')->group(function () { 
 			Route::get('/', [App\Http\Controllers\Menus::class, 'show']);
-			Route::delete('/{menu}', [App\Http\Controllers\Menus::class, 'destroy']);
+			Route::delete('/', [App\Http\Controllers\Menus::class, 'destroy']);
 
 
 			Route::post('category-order', [App\Http\Controllers\Categories::class, 'order']);

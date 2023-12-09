@@ -21,7 +21,13 @@ class Restaurants extends Controller
         }
 
         return [
-            'restaurants' => RestaurantResource::collection(Restaurant::all()),
+            'restaurants' => RestaurantResource::collection(Restaurant::query()
+                ->orderBy('name')
+                ->get()->map(function ($restaurant) {
+                    if ($restaurant->users()->where('user_id', auth()->user()->id)->exists()) {
+                        return new RestaurantResource($restaurant);
+                    }
+                })),
             'users' => UserResource::collection(User::all()),
         ];
     }
