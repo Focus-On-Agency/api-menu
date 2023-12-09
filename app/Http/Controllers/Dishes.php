@@ -48,7 +48,7 @@ class Dishes extends Controller
             'price' => 'required|numeric',
 
             /**
-             * @var array $allergens_id
+             * @var json $allergens_id
              * @example [1]
              */
             'allergens_id' => 'nullable',
@@ -133,7 +133,7 @@ class Dishes extends Controller
              * @var $allergens_id
              * @example [1]
              */
-            'allergens_id' => 'nullable|array|exists:allergens,id',
+            'allergens_id' => 'nullable',
         ]);
 
         $dish->update([
@@ -146,6 +146,12 @@ class Dishes extends Controller
             'price' => $request->input('price') * 100,
         ]);
 
+        if (is_string($request->input('allergens_id'))) {
+           $request->merge([
+               'allergens_id' => json_decode($request->input('allergens_id')),
+           ]);
+        }
+        
         $dish->load('allergens');
 
         $dish->allergens()->sync($request->input('allergens_id', []));

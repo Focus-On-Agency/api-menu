@@ -49,7 +49,7 @@ class Categories extends Controller
 			'image' => 'nullable|image',
 
 			/**
-			 * @var array dishes
+			 * @var json dishes
 			 * @example 
 			 * [1, 2, 3]
 			 */
@@ -76,6 +76,12 @@ class Categories extends Controller
 		}
 
 		if ($request->has('dishes') && !empty($request->input('dishes'))) {
+			if(is_string($request->input('dishes'))){
+				$request->merge([
+					'dishes' => json_decode($request->input('dishes')),
+				]);
+			}
+
 			foreach ($request->input('dishes') as $order => $dish_id) {
 				$category->dishes()
 					->attach($dish_id, [
@@ -148,7 +154,7 @@ class Categories extends Controller
 			'image' => 'nullable|image',
 
 			/**
-			 * @var array dishes
+			 * @var json dishes
 			 * @example 
 			 * [1, 2, 3]
 			 */
@@ -170,6 +176,12 @@ class Categories extends Controller
 		}
 
 		if ($request->has('dishes') && !empty($request->input('dishes'))) {
+			if(is_string($request->input('dishes'))){
+				$request->merge([
+					'dishes' => json_decode($request->input('dishes')),
+				]);
+			}
+
 			$syncData = [];
 			foreach ($request->input('dishes') as $order => $dish_id) {
 				$syncData[$dish_id] = ['order' => $order + 1];
@@ -232,11 +244,17 @@ class Categories extends Controller
 
 		$request->validate([
 			/**
-			 * @var array $categories
+			 * @var json $categories
 			 * @example [1, 2, 3]
 			 */
-			'categories' => 'required|array',
+			'categories' => 'required',
 		]);
+
+		if(is_string($request->input('categories'))){
+			$request->merge([
+				'categories' => json_decode($request->input('categories')),
+			]);
+		}
 
 		$categories = $request->input('categories');
 

@@ -29,16 +29,22 @@ class Menus extends Controller
             'icon' => 'nullable|string',
 
             /**
-             * @var array $restaurants_id
+             * @var json $restaurants_id
              * @example [1, 2, 3]
              */
-            'restaurants_id' => 'required|array',
+            'restaurants_id' => 'required',
         ]);
 
         $menu = Menu::create([
             'name' => $request->input('name'),
             'icon_name' => $request->input('icon'),
         ]);
+
+        if(is_string($request->input('restaurants_id'))) {
+            $request->merge([
+                'restaurants_id' => json_decode($request->input('restaurants_id')),
+            ]);
+        }
 
         $menu->restaurants()->attach($request->input('restaurants_id'));
 
@@ -82,10 +88,10 @@ class Menus extends Controller
             'icon' => 'nullable|string',
 
             /**
-             * @var array $restaurants_id
+             * @var json $restaurants_id
              * @example [1, 2, 3]
              */
-            'restaurants_id' => 'required|array',
+            'restaurants_id' => 'required',
         ]);
 
         $menu->update([
@@ -93,6 +99,12 @@ class Menus extends Controller
             'icon_name' => $request->input('icon'),
         ]);
 
+        if(is_string($request->input('restaurants_id'))) {
+            $request->merge([
+                'restaurants_id' => json_decode($request->input('restaurants_id')),
+            ]);
+        }
+        
         $menu->load('categories');
 
         $menu->restaurants()->sync($request->input('restaurants_id'));
