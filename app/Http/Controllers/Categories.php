@@ -266,7 +266,7 @@ class Categories extends Controller
 			;
 		}
 
-		return CategoryResource::collection($restaurant
+		return CategoryResource::collection($menu
 			->categories->map(function ($category) use ($menu) {
 				return new CategoryResource($category, $menu);
         }));
