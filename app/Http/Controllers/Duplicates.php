@@ -34,6 +34,7 @@ class Duplicates extends Controller
         $restaurant = Restaurant::find($request->restaurant_id);
 
         $newMenu = $menu->replicate();
+        $newMenu->save();
 
         $restaurant->menus()->attach($newMenu->id);
 
