@@ -16,7 +16,7 @@ class Frontend extends Controller
     {
         return FrontendCategoryResource::collection($restaurant
             ->menus()->where('menu_id', $menu->id)->first()
-            ->categories->map(function ($category) use ($menu) {
+            ->categories()->where('visible', 1)->get()->map(function ($category) use ($menu) {
                 return new FrontendCategoryResource($category, $menu);
             }))
         ;

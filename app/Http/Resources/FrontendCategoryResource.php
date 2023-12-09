@@ -28,7 +28,7 @@ class FrontendCategoryResource extends JsonResource
             'name' => $this->name,
             'image_path' => $this->image?->path,
             'iamge_name' => $this->image?->name,
-            'dishes' => $this->dishes->map(function ($dish) {
+            'dishes' => $this->dishes()->where('visible', 1)->get()->map(function ($dish) {
                 return new DishResource($dish, $this->menu, Category::find($this->id), true);
             }),
         ];

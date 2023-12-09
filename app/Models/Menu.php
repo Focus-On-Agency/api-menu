@@ -17,7 +17,7 @@ class Menu extends Model
 	public function categories()
 	{
 		return $this->belongsToMany(Category::class, 'menu_category', 'menu_id', 'category_id')
-			->withPivot('order')
+			->withPivot('order', 'visible')
 			->orderByPivot('order')
 		;
 	}
