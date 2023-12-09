@@ -126,14 +126,15 @@ class Duplicates extends Controller
         ]);
 
         $menu = Menu::find($request->menu_id);
-        $dish->menus()->attach($menu->id, [
-            'price' => $dish->menus()->where('menu_id', $menu->id)->first()->pivot->price,
+        $category = Category::find($request->category_id);
+
+        $category->dishes()->attach($dish->id, [
+            'order' => $category->dishes()->count() + 1,
+            'visible' => true,
         ]);
 
-        $category = Category::find($request->category_id);
-        $dish->categories()->attach($category->id, [
-            'order' => $category->dishes()->count() + 1,
-            'visible' => false,
+        $menu->dishes()->attach($dish->id, [
+            'price' => $menu->dishes()->where('dish_id', $dish->id)->first()->pivot->price,
         ]);
 
         return new DishResource($dish, $menu, $category);
