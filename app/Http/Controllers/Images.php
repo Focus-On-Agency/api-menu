@@ -12,11 +12,9 @@ class Images extends Controller
      */
     public function destroy(Image $image)
     {
-        if ($image->category)
-        {
-            $image->category->image_id = null;
-            $image->category->save();
-        }
+        
+        $image->category->image_id = null;
+        $image->category->save();
 
         Storage::delete($image->name);
 
