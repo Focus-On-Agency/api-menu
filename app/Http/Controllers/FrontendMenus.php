@@ -1,11 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\Frontend;
+namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 
-class Categories extends Controller
+class FrontendMenus extends Controller
 {
     /**
      * Handle the incoming request.

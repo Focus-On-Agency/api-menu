@@ -15,6 +15,8 @@ class Dish extends Model
         'description_en',
     ];
 
+    protected $with = ['allergens'];
+
     public function categories()
     {
         return $this->belongsToMany(Category::class, 'category_dish', 'dish_id', 'category_id')->withPivot('order', 'visible');
