@@ -74,25 +74,30 @@ class Duplicates extends Controller
             'menu_id' => 'required|exists:menus,id'
         ]);
 
+        $restaurant = Restaurant::find($request->restaurant_id);
         $menu = Menu::find($request->menu_id);
-        $menu->categories()->attach($category->id, [
+
+        $newCategory = $category->replicate();
+        $newCategory->restaurant_id = $restaurant->id;
+        $newCategory->save();
+
+        $menu->categories()->attach($newCategory->id, [
             'order' => $menu->categories()->count() + 1,
             'visible' => false,
         ]);
 
-        $restaurant = Restaurant::find($request->restaurant_id);
-        $restaurant->menus()->attach($menu->id);
-
         foreach ($category->dishes as $dish)
         {
-            $dish->categories()->attach($category->id, [
-                'order' => $category->dishes()->count() + 1,
-                'visible' => false,
+            $newCategory->dishes()->attach($dish->id, [
+                'order' => $newCategory->dishes()->count() + 1,
+                'visible' => true,
             ]);
-            $dish->menus()->attach($menu->id, [
-                'price' => $dish->menus()->where('menu_id', $menu->id)->first()->pivot->price,
+            $menu->dishes()->attach($dish->id, [
+                'price' => $menu->dishes()->where('dish_id', $dish->id)->first()->pivot->price,
             ]);
         }
+
+
 
         return new CategoryResource($category, $menu);
     }
