@@ -32,9 +32,22 @@ class Duplicates extends Controller
         ]);
 
         $restaurant = Restaurant::find($request->restaurant_id);
-        $restaurant->menus()->attach($menu->id);
 
-        return new MenuResource($menu);
+        $newMenu = $menu->replicate();
+
+        $restaurant->menus()->attach($newMenu->id);
+
+        foreach ($menu->categories as $category)
+        {
+            $newMenu->categories()->attach($category->id);
+
+            foreach ($category->dishes as $dish)
+            {
+                $newMenu->dishes()->attach($dish->id);
+            }
+        }
+
+        return new MenuResource($newMenu);
     }
 
     /**
