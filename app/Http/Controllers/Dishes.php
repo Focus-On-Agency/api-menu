@@ -142,7 +142,7 @@ class Dishes extends Controller
             'description_en' => $request->input('description_en'),
         ]);
 
-        $menu->dishes()->attach($dish->id, [
+        $menu->dishes()->updateExistingPivot($dish->id, [
             'price' => $request->input('price') * 100,
         ]);
 

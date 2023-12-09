@@ -10,7 +10,7 @@ use App\Http\Resources\FrontendMenusResource;
 class Frontend extends Controller
 {
     /**
-     * Handle the incoming request.
+     * Get all categories for a menu
      */
     public function categories(Restaurant $restaurant, Menu $menu)
     {
@@ -22,6 +22,9 @@ class Frontend extends Controller
         ;
     }
 
+    /**
+     * Get all menus for a restaurant
+     */
     public function menus(Restaurant $restaurant)
     {
         return FrontendMenusResource::collection($restaurant->menus);
