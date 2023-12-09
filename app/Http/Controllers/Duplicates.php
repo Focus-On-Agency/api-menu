@@ -75,15 +75,23 @@ class Duplicates extends Controller
         ]);
 
         $menu = Menu::find($request->menu_id);
-        $menu->categories()->attach($category->id);
+        $menu->categories()->attach($category->id, [
+            'order' => $menu->categories()->count() + 1,
+            'visible' => false,
+        ]);
 
         $restaurant = Restaurant::find($request->restaurant_id);
         $restaurant->menus()->attach($menu->id);
 
         foreach ($category->dishes as $dish)
         {
-            $dish->categories()->attach($category->id);
-            $dish->menus()->attach($menu->id);
+            $dish->categories()->attach($category->id, [
+                'order' => $category->dishes()->count() + 1,
+                'visible' => false,
+            ]);
+            $dish->menus()->attach($menu->id, [
+                'peice' => $dish->menus->price,
+            ]);
         }
 
         return new CategoryResource($category, $menu);
@@ -113,10 +121,15 @@ class Duplicates extends Controller
         ]);
 
         $menu = Menu::find($request->menu_id);
-        $dish->menus()->attach($menu->id);
+        $dish->menus()->attach($menu->id, [
+            'price' => $dish->menus->price,
+        ]);
 
         $category = Category::find($request->category_id);
-        $dish->categories()->attach($category->id);
+        $dish->categories()->attach($category->id, [
+            'order' => $category->dishes()->count() + 1,
+            'visible' => false,
+        ]);
 
         return new DishResource($dish, $menu, $category);
     }

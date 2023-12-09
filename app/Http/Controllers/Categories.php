@@ -12,22 +12,6 @@ use Illuminate\Support\Facades\Gate;
 class Categories extends Controller
 {
 	/**
-	 * List
-	 */
-	public function index(Restaurant $restaurant, Menu $menu)
-	{
-		if ($restaurant->menus()->where('menu_id', $menu->id)->doesntExist()) {
-			abort(404, 'Menu not found for this restaurant');
-		}
-
-		return CategoryResource::collection($restaurant
-			->menus()->where('menu_id', $menu->id)->first()
-			->categories->map(function ($category) use ($menu) {
-				return new CategoryResource($category, $menu);
-        }));
-	}
-
-	/**
 	 * Store
 	 */
 	public function store(Restaurant $restaurant, Menu $menu, Request $request)
