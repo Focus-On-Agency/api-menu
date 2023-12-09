@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\DishResource;
 use App\Http\Resources\MenuResource;
 use App\Models\Menu;
 use App\Models\Restaurant;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Http\Request;
 
 class Menus extends Controller
@@ -117,12 +117,16 @@ class Menus extends Controller
      */
     public function destroy(Restaurant $restaurant, Menu $menu)
     {  
-        $restaurant->menus()->where('menu_id', $menu->id)->frist()->categories()->detach();
-        $restaurant->menus()->where('menu_id', $menu->id)->frist()->dishes()->detach();
+        if (Gate::denies('admin')) {
+            abort(403, 'Unauthorized');
+        }
+
+        $restaurant->menus()->where('menu_id', $menu->id)->first()->categories()->detach();
+        $restaurant->menus()->where('menu_id', $menu->id)->first()->dishes()->detach();
         
         $restaurant->menus()->detach($menu->id);
 
-        if ($menu->restaurants()->count() > 0) {
+        if ($menu->restaurants()->count() == 0) {
             $menu->delete();
         }
 

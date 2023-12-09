@@ -27,8 +27,7 @@ class Restaurants extends Controller
                     if ($restaurant->users()->where('user_id', auth()->user()->id)->exists()) {
                         return new RestaurantResource($restaurant);
                     }
-                })),
-            'users' => UserResource::collection(User::all()),
+                }))
         ];
     }
 
