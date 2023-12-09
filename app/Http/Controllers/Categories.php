@@ -155,7 +155,7 @@ class Categories extends Controller
 
 		if ($request->hasFile('image')) {
 
-			$fileName = time() . '_' . $request->input('image')->getClientOriginalName();
+			$fileName = time() . '_' . $request->file('image')->getClientOriginalName();
 
 			$image = $category->image()->create([
 				'path' => 'storage/' . $request->file('image')->storeAs('categories', $fileName, 'public'),
