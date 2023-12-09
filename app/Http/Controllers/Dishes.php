@@ -151,10 +151,9 @@ class Dishes extends Controller
                'allergens_id' => json_decode($request->input('allergens_id')),
            ]);
         }
+        $dish->allergens()->sync($request->input('allergens_id', []));
         
         $dish->load('allergens');
-
-        $dish->allergens()->sync($request->input('allergens_id', []));
 
         return new DishResource($dish, $menu);
     }

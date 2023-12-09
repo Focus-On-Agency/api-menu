@@ -13,7 +13,12 @@ class Allergens extends Controller
      */
     public function index()
     {
-        return AllergenResource::collection(Allergen::all());
+        return AllergenResource::collection(Allergen::query()
+            ->orderBy('name')
+            ->get()->map(function ($allergen) {
+                return new AllergenResource($allergen);
+            }))
+        ;
     }
 
     /**
