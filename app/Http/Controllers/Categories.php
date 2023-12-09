@@ -8,6 +8,7 @@ use App\Http\Resources\CategoryResource;
 use App\Models\Menu;
 use App\Models\Restaurant;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Storage;
 
 class Categories extends Controller
 {
@@ -50,8 +51,11 @@ class Categories extends Controller
 		]);
 
 		if ($request->hasFile('image')) {
+
+			$fileName = time() . '_' . $request->input('image')->getClientOriginalName();
+
 			$image = $category->image()->create([
-				'path' => $request->file('image')->store('categories'),
+				'path' => 'storage/' . $request->file('image')->storeAs('categories', $fileName, 'public'),
 				'name' => $request->file('image')->getClientOriginalName(),
 			]);
 	
@@ -150,8 +154,11 @@ class Categories extends Controller
 		]);
 
 		if ($request->hasFile('image')) {
+
+			$fileName = time() . '_' . $request->input('image')->getClientOriginalName();
+
 			$image = $category->image()->create([
-				'path' => $request->file('image')->store('categories'),
+				'path' => 'storage/' . $request->file('image')->storeAs('categories', $fileName, 'public'),
 				'name' => $request->file('image')->getClientOriginalName(),
 			]);
 	
