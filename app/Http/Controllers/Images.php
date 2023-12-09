@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Image;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class Images extends Controller
@@ -19,7 +18,7 @@ class Images extends Controller
             $image->category->save();
         }
 
-        Storage::delete($image->path);
+        Storage::delete($image->name);
 
         $image->delete();
 

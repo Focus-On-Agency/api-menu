@@ -93,5 +93,7 @@ Route::group(["middleware" => ["auth:sanctum"]], function(){
 		Route::post('dish/{dish}', [App\Http\Controllers\Duplicates::class, 'dish']);
 	});
 
-	Route::delete('image/{image}', [App\Http\Controllers\Images::class, 'destroy']);
+	Route::prefix('image')->group(function () {
+		Route::delete('/{image}', [App\Http\Controllers\Images::class, 'destroy']);
+	});
 });
