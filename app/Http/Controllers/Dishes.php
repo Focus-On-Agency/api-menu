@@ -10,7 +10,6 @@ use App\Models\Menu;
 use App\Models\Restaurant;
 use Illuminate\Support\Facades\Gate;
 
-
 class Dishes extends Controller
 {
     /**

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Resources\AllergenResource;
 use App\Models\Allergen;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class Allergens extends Controller
 {
@@ -106,6 +107,10 @@ class Allergens extends Controller
      */
     public function destroy(Allergen $allergen)
     {
+        if (Gate::denies('admin')) {
+            abort(403, 'Unauthorized');
+        }
+
         $allergen->dishes()->detach();
         
         $allergen->delete();
