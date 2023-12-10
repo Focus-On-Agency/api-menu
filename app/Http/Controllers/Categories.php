@@ -8,7 +8,6 @@ use App\Http\Resources\CategoryResource;
 use App\Models\Menu;
 use App\Models\Restaurant;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Storage;
 
 class Categories extends Controller
 {

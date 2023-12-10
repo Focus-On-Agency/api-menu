@@ -40,11 +40,24 @@ class Duplicates extends Controller
 
         foreach ($menu->categories as $category)
         {
-            $newMenu->categories()->attach($category->id);
+            $newCategory = $category->replicate();
+            $newCategory->restaurant_id = $restaurant->id;
+            $newCategory->save();
+
+            $newMenu->categories()->attach($newCategory->id, [
+                'order' => $newMenu->categories()->count() + 1,
+                'visible' => false,
+            ]);
 
             foreach ($category->dishes as $dish)
             {
-                $newMenu->dishes()->attach($dish->id);
+                $newCategory->dishes()->attach($dish->id, [
+                    'order' => $newCategory->dishes()->count() + 1,
+                    'visible' => true,
+                ]);
+                $newMenu->dishes()->attach($dish->id, [
+                    'price' => $newMenu->dishes()->where('dish_id', $dish->id)->first()->pivot->price,
+                ]);
             }
         }
 
