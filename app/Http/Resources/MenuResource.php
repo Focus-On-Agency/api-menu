@@ -19,6 +19,9 @@ class MenuResource extends JsonResource
 
         return [
             'id' => $this->id,
+            'restaurant' => $this->when($request->restaurant, function () use ($request) {
+                return $request->restaurant->name;
+            }),
             'name' => $this->name,
             'icon' => $this->icon_name,
             'categories' => $this->whenLoaded('categories', function () use ($menu) {
