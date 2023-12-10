@@ -56,7 +56,7 @@ class Duplicates extends Controller
                     'visible' => true,
                 ]);
                 $newMenu->dishes()->attach($dish->id, [
-                    'price' => $newMenu->dishes()->where('dish_id', $dish->id)->first()->pivot->price,
+                    'price' => $dish->dishes()->where('dish_id', $dish->id)->first()->pivot->price,
                 ]);
             }
         }
