@@ -146,9 +146,11 @@ class Duplicates extends Controller
             'visible' => true,
         ]);
 
-        $menu->dishes()->attach($dish->id, [
-            'price' => $menu->dishes()->where('dish_id', $dish->id)->first()->pivot->price,
-        ]);
+        if (!$menu->dishes()->where('dish_id', $dish->id)->exists()) {
+            $menu->dishes()->attach($dish->id, [
+                'price' => $menu->dishes()->where('dish_id', $dish->id)->first()->pivot->price
+            ]);
+        }
 
         return new DishResource($dish, $menu, $category);
     }
