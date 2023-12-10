@@ -17,7 +17,7 @@ class Images extends Controller
             $image->category->save();
         }
 
-        Storage::delete($image->name);
+        Storage::delete(str_replace("storage/", "", $image->path));
 
         $image->delete();
 
