@@ -14,10 +14,6 @@ class Index extends Controller
     {
         $data = [];
 
-        $menus = Menu::all();
-
-        $data['menus'] = $menus->count() ?? 0;
-
         $restaurants = Restaurant::all();
 
         foreach ($restaurants as $restaurant)
