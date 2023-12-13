@@ -59,6 +59,7 @@ Route::group(["middleware" => ["auth:sanctum"]], function(){
 
 				Route::prefix('{category}')->group(function () {
 					Route::prefix('dish')->group(function () {
+						Route::post('/', [App\Http\Controllers\Dishes::class, 'storeInCategory']);
 						Route::get('/{dish}/visibility', [App\Http\Controllers\Dishes::class, 'visibility']);
 						Route::get('/{dish}', [App\Http\Controllers\Dishes::class, 'show']);
 						Route::delete('/{dish}', [App\Http\Controllers\Dishes::class, 'destroy']);
