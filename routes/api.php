@@ -41,6 +41,14 @@ Route::group(["middleware" => ["auth:sanctum"]], function(){
 		Route::delete('/{restaurant}', [App\Http\Controllers\Restaurants::class, 'destroy']);
 	});
 
+	Route::prefix('image/delete')->group(function () {
+		Route::delete('/{image}', [App\Http\Controllers\Images::class, 'destroy']);
+	});
+
+	Route::prefix(('home'))->group(function () {
+		Route::get('/', [App\Http\Controllers\Index::class, 'home']);
+	});
+
 	Route::prefix('{restaurant}')->group(function () {
 
 		Route::get('menu-dishes/{menu}', [App\Http\Controllers\Menus::class, 'dishes']);
@@ -92,9 +100,5 @@ Route::group(["middleware" => ["auth:sanctum"]], function(){
 		Route::post('menu/{menu}', [App\Http\Controllers\Duplicates::class, 'menu']);
 		Route::post('category/{category}', [App\Http\Controllers\Duplicates::class, 'category']);
 		Route::post('dish/{dish}', [App\Http\Controllers\Duplicates::class, 'dish']);
-	});
-
-	Route::prefix('image/delete')->group(function () {
-		Route::delete('/{image}', [App\Http\Controllers\Images::class, 'destroy']);
 	});
 });
