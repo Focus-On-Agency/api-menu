@@ -18,10 +18,12 @@ class Index extends Controller
 
         foreach ($restaurants as $restaurant)
         {
+            $tmp = [];
             foreach ($restaurant->menus as $menu)
             {
-                $data[$restaurant->name . ' - ' . $menu->name] = $menu->dishes()->count() ?? 0;
+                $tmp[$menu->name] = $menu->dishes()->count() ?? 0;
             }
+            $data[$restaurant->name] = $tmp;
         }
 
         return response()->json($data);
