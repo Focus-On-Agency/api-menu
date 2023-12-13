@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Menu;
+use App\Models\Restaurant;
 
 class Index extends Controller
 {
@@ -17,8 +18,14 @@ class Index extends Controller
 
         $data['menus'] = $menus->count() ?? 0;
 
-        foreach ($menus as $menu) {
-            $data[$menu->name] = $menu->dishes()->count() ?? 0;
+        $restaurants = Restaurant::all();
+
+        foreach ($restaurants as $restaurant)
+        {
+            foreach ($restaurant->menus as $menu)
+            {
+                $data[$restaurant->name . ' - ' . $menu->name] = $menu->dishes()->count() ?? 0;
+            }
         }
 
         return response()->json($data);
