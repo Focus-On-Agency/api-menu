@@ -80,7 +80,6 @@ Route::group(["middleware" => ["auth:sanctum"]], function(){
 				Route::put('/{dish}', [App\Http\Controllers\Dishes::class, 'update']);
 			});
 		});
-		
 	});
 
 	Route::prefix('menu')->group(function () {

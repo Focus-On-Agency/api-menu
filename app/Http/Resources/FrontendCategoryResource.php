@@ -30,7 +30,7 @@ class FrontendCategoryResource extends JsonResource
             'iamge_name' => $this->image?->name,
             'dishes' => $this->dishes()->where('visible', 1)->get()->map(function ($dish) {
                 return new DishResource($dish, $this->menu, Category::find($this->id), true);
-            }),
+            })
         ];
     }
 }
