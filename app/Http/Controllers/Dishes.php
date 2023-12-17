@@ -32,7 +32,7 @@ class Dishes extends Controller
              * @var string $description
              * @example Pizza met tomatensaus, mozzarella en ham
              */
-            'description' => 'required|string',
+            'description' => 'nullable|string',
 
             /**
              * @var string $description_en
@@ -114,7 +114,7 @@ class Dishes extends Controller
              * @var string $description
              * @example Pizza met tomatensaus, mozzarella en ham
              */
-            'description' => 'required|string',
+            'description' => 'nullable|string',
 
             /**
              * @var string $description_en
@@ -181,7 +181,7 @@ class Dishes extends Controller
              * @var string $description
              * @example Pizza met tomatensaus, mozzarella en ham
              */
-            'description' => 'required|string',
+            'description' => 'nullable|string',
 
             /**
              * @var string $description_en
