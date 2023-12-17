@@ -7,21 +7,27 @@ use App\Models\Menu;
 
 class AllergeneServices
 {
+	/**
+	 * Get all allergenes for a menu
+	 */
 	static public function getAllergenesByMenu(Menu $menu)
 	{
-		$allergenes = Allergen::all();
-		$allergenes->map(function ($allergene) use ($menu) {
-			$allergenes = $allergene->dishes()->get()->map(function ($dish) use ($menu) {
-				$dish->menus()->where('menu_id', $menu->id)->first();
-			})->filter(function ($dish) use ($menu) {
-				return $dish && $dish->menus()->where('menu_id', $menu->id)->first()->pivot->visible;
-			})->map(function ($dish) {
-				return $dish->allergenes;
-			})->flatten()->unique('id');
+		$dishes = $menu->dishes;
 
-			return $allergenes;
-		});
+		$allergenIds = [];
 
-		return $allergenes;
+		foreach ($dishes as $dish) {
+			if ($dish->allergens) {
+				foreach ($dish->allergens as $allergen) {
+					$allergenIds[] = $allergen->id;
+				}
+
+				$allergenIds = array_unique($allergenIds);
+			}
+		}
+
+
+		return Allergen::whereIn('id', $allergenIds)->get();
 	}
+
 }
