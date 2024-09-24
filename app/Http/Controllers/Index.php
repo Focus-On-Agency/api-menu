@@ -18,14 +18,35 @@ class Index extends Controller
 
         foreach ($restaurants as $restaurant)
         {
-            $tmp = [];
             foreach ($restaurant->menus as $menu)
             {
-                $tmp[$menu->name] = $menu->dishes()->count() ?? 0;
+                $dishes = $this->getDishesByMenu($menu->id);
+                $data[$restaurant->name][$menu->name] = $dishes->count();
             }
-            $data[$restaurant->name] = $tmp;
         }
 
         return response()->json($data);
     }
+
+    public function getDishesByMenu($menuId)
+    {
+        $menu = Menu::with(['categories.dishes' => function ($query) {
+            $query->wherePivot('visible', 1); // Assumendo che tu voglia solo i piatti visibili
+        }])->find($menuId);
+
+        $dishes = collect();
+
+        if ($menu) {
+            foreach ($menu->categories as $category) {
+                foreach ($category->dishes as $dish) {
+                    $dishes->push($dish);
+                }
+            }
+        }
+
+        return $dishes->unique('id'); // Rimuovi eventuali duplicati
+    }
+
+
+
 }

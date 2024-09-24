@@ -28,6 +28,12 @@ class Categories extends Controller
 			'name' => 'required|string',
 
 			/**
+			 * @var string $description
+			 * @example Pizza is an Italian gastronomic product, consisting of a leavened base obtained from a dough of flour and water.
+			 */
+			'description' => 'nullable|string|max:65534',
+
+			/**
 			 * @var $image
 			 */
 			'image' => 'nullable|image',
@@ -46,6 +52,7 @@ class Categories extends Controller
 
 		$category = Category::create([
 			'name' => $request->input('name'),
+			'description' => $request->input('description'),
 			'restaurant_id' => $restaurant->id,
 		]);
 
@@ -130,6 +137,12 @@ class Categories extends Controller
 			'name' => 'required|string',
 
 			/**
+			 * @var string $description
+			 * @example Pizza is an Italian gastronomic product, consisting of a leavened base obtained from a dough of flour and water.
+			 */
+			'description' => 'nullable|string|max:65534',
+
+			/**
 			 * @var bool $visible
 			 * @example true
 			 */
@@ -150,6 +163,7 @@ class Categories extends Controller
 
 		$category->update([
 			'name' => $request->input('name'),
+			'description' => $request->input('description'),
 		]);
 
 		if ($request->hasFile('image')) {
@@ -280,6 +294,40 @@ class Categories extends Controller
 				'visible' => !$category->menus()->where('menu_id', $menu->id)->first()->pivot->visible,
 			])
 		;
+
+		return new CategoryResource($category, $menu);
+	}
+
+	/**
+	 * Re-order all dish in alphabetical order
+	 */
+	public function orderAutomatically(Restaurant $restaurant, Menu $menu, Category $category)
+	{
+		if (Gate::denies('admin')) {
+			abort(403, 'Unauthorized');
+		}
+
+		if ($restaurant->menus()->where('menu_id', $menu->id)->doesntExist()) {
+			abort(404, 'Menu not found for this restaurant');
+		}
+
+		if ($menu->categories()->where('category_id', $category->id)->doesntExist()) {
+			abort(404, 'Category not found for this menu');
+		}
+
+		$category->dishesNotOrder()
+			->orderBy('name')
+			->get()
+			->each(function ($dish, $index) use ($category) {
+				$category->dishes()
+					->updateExistingPivot($dish->id, [
+						'order' => $index + 1,
+					])
+				;
+			})
+		;
+
+		$category->load('dishes');
 
 		return new CategoryResource($category, $menu);
 	}

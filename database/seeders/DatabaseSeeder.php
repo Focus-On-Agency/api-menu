@@ -42,9 +42,17 @@ class DatabaseSeeder extends Seeder
 		]);
 
 		DB::table('menus')->insert([
-			['name' => 'Menu', 'icon_name' => 'chopstick'],
-			['name' => 'Wine List', 'icon_name' => 'wine'],
-			['name' => 'Drink List', 'icon_name' => 'drink']
+			['name' => 'Menu Napoli', 'icon_name' => 'chopstick'],
+			['name' => 'Wine List Napoli', 'icon_name' => 'wine'],
+			['name' => 'Drink List Napoli', 'icon_name' => 'drink'],
+
+			['name' => 'Menu Portici', 'icon_name' => 'chopstick'],
+			['name' => 'Wine List Portici', 'icon_name' => 'wine'],
+			['name' => 'Drink List Portici', 'icon_name' => 'drink'],
+
+			['name' => 'Menu Sorrento', 'icon_name' => 'chopstick'],
+			['name' => 'Wine List Sorrento', 'icon_name' => 'wine'],
+			['name' => 'Drink List Sorrento', 'icon_name' => 'drink'],
 		]);
 
 		DB::table('menu_restaurants')->insert([
@@ -52,13 +60,13 @@ class DatabaseSeeder extends Seeder
 			['menu_id' => 2, 'restaurant_id' => 1],
 			['menu_id' => 3, 'restaurant_id' => 1],
 
-			['menu_id' => 1, 'restaurant_id' => 2],
-			['menu_id' => 2, 'restaurant_id' => 2],
-			['menu_id' => 3, 'restaurant_id' => 2],
+			['menu_id' => 4, 'restaurant_id' => 2],
+			['menu_id' => 5, 'restaurant_id' => 2],
+			['menu_id' => 6, 'restaurant_id' => 2],
 
-			['menu_id' => 1, 'restaurant_id' => 3],
-			['menu_id' => 2, 'restaurant_id' => 3],
-			['menu_id' => 3, 'restaurant_id' => 3],
+			['menu_id' => 7, 'restaurant_id' => 3],
+			['menu_id' => 8, 'restaurant_id' => 3],
+			['menu_id' => 9, 'restaurant_id' => 3],
 		]);
 	}
 }

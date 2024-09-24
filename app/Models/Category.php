@@ -11,6 +11,7 @@ class Category extends Model
 
     protected $fillable = [
         'name',
+        'description',
         'image_id',
         'restaurant_id',
     ];
@@ -22,6 +23,13 @@ class Category extends Model
         return $this->belongsToMany(Dish::class, 'category_dish', 'category_id', 'dish_id')
             ->withPivot('order', 'visible')
             ->orderByPivot('order')
+        ;
+    }
+
+    public function dishesNotOrder()
+    {
+        return $this->belongsToMany(Dish::class, 'category_dish', 'category_id', 'dish_id')
+            ->withPivot('order', 'visible')
         ;
     }
 

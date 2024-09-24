@@ -66,6 +66,7 @@ Route::group(["middleware" => ["auth:sanctum"]], function(){
 
 
 			Route::post('category-order', [App\Http\Controllers\Categories::class, 'order']);
+			Route::post('/{category}/category-order-automatically', [App\Http\Controllers\Categories::class, 'orderAutomatically']);
 			Route::prefix('category')->group(function () {
 				Route::get('/{category}/visibility', [App\Http\Controllers\Categories::class, 'visibility']);
 				Route::get('/{category}', [App\Http\Controllers\Categories::class, 'show']);
