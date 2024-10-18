@@ -10,6 +10,8 @@ class MenuDish extends Model
 {
     use HasFactory;
 
+    protected $table = 'menu_dish';
+
     protected $fillable = [
         'menu_id',
         'dish_id',

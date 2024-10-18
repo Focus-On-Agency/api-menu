@@ -278,4 +278,28 @@ class Dishes extends Controller
 
         return new DishResource($dish, $menu, $category);
     }
+
+    /**
+     * Change delivery
+     */
+    public function changeDelivery(Restaurant $restaurant, Menu $menu, Category $category, Dish $dish)
+    {
+        if ($restaurant->menus()->where('menu_id', $menu->id)->doesntExist()) {
+            abort(404, 'Menu not found for this restaurant');
+        }
+
+        if ($menu->categories()->where('category_id', $category->id)->doesntExist()) {
+            abort(404, 'Category not found for this menu');
+        }
+
+        if ($category->dishes()->where('dish_id', $dish->id)->doesntExist()) {
+            abort(404, 'Dish not found for this category');
+        }
+
+        $category->dishes()->updateExistingPivot($dish->id, [
+            'allow_delivery' => !$dish->categories()->where('category_id', $category->id)->first()->pivot->allow_delivery,
+        ]);
+
+        return new DishResource($dish, $menu, $category);
+    }
 }

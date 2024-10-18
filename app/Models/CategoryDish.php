@@ -14,10 +14,12 @@ class CategoryDish extends Model
         'dish_id',
         'order',
         'visible',
+        'allow_delivery',
     ];
 
     protected $casts = [
-        'visible' => 'boolean'
+        'visible' => 'boolean',
+        'allow_delivery' => 'boolean'
     ];
 
     public function category()

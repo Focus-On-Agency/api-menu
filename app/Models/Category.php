@@ -21,7 +21,7 @@ class Category extends Model
     public function dishes()
     {
         return $this->belongsToMany(Dish::class, 'category_dish', 'category_id', 'dish_id')
-            ->withPivot('order', 'visible')
+            ->withPivot('order', 'visible', 'allow_delivery')
             ->orderByPivot('order')
         ;
     }

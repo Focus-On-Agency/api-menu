@@ -19,7 +19,9 @@ class Dish extends Model
 
     public function categories()
     {
-        return $this->belongsToMany(Category::class, 'category_dish', 'dish_id', 'category_id')->withPivot('order', 'visible');
+        return $this->belongsToMany(Category::class, 'category_dish', 'dish_id', 'category_id')
+            ->withPivot('order', 'visible', 'allow_delivery')
+        ;
     }
 
     public function allergens()

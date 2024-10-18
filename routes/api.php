@@ -20,6 +20,7 @@ Route::prefix('frontend')->group(function () {
 	Route::prefix('{restaurant}')->group(function () {
 		Route::get('/menu', [App\Http\Controllers\Frontend::class, 'menus']);
 		Route::get('/menu/{menu}/categories', [App\Http\Controllers\Frontend::class, 'categories']);
+		Route::get('/delivery-menu', [App\Http\Controllers\Frontend::class, 'deliveryMenu']);
 	});
 });
 
@@ -78,6 +79,7 @@ Route::group(["middleware" => ["auth:sanctum"]], function(){
 					Route::prefix('dish')->group(function () {
 						Route::post('/', [App\Http\Controllers\Dishes::class, 'storeInCategory']);
 						Route::get('/{dish}/visibility', [App\Http\Controllers\Dishes::class, 'visibility']);
+						Route::get('/{dish}/delivery', [App\Http\Controllers\Dishes::class, 'changeDelivery']);
 						Route::get('/{dish}', [App\Http\Controllers\Dishes::class, 'show']);
 						Route::delete('/{dish}', [App\Http\Controllers\Dishes::class, 'destroy']);
 					});

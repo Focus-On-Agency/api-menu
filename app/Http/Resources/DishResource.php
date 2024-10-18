@@ -38,7 +38,8 @@ class DishResource extends JsonResource
             'price' => $this->menu->dishes()->where('dish_id', $this->id)->first()->pivot->price / 100,
             'order' =>  $this->when(!$this->hiddenInfo, $this->category ? (int)$this->category->dishes()->where('dish_id', $this->id)->first()->pivot->order : null),
             'visible' =>  $this->when(!$this->hiddenInfo, $this->category ? (int)$this->category->dishes()->where('dish_id', $this->id)->first()->pivot->visible : null),
-            'allergeens' => $this->whenLoaded('allergens', function () {
+            'allow_delivery' =>  $this->when(!$this->hiddenInfo, $this->category ? (bool)$this->category->dishes()->where('dish_id', $this->id)->first()->pivot->allow_delivery : null),
+            'allergens' => $this->whenLoaded('allergens', function () {
                 return $this->allergens->map(function ($allergen) {
                     return new AllergenResource($allergen, $this->hiddenInfo);
                 });
