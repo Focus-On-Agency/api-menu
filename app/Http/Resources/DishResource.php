@@ -35,7 +35,7 @@ class DishResource extends JsonResource
                 'it' => $this->description,
                 'en' => $this->description_en,
             ],
-            'price' => $this->menu->dishes()->where('dish_id', $this->id)->first()->pivot->price / 100,
+            'price' => $this->menu->dishes()->where('dish_id', $this->id)->first()?->pivot->price / 100,
             'order' =>  $this->when(!$this->hiddenInfo, $this->category ? (int)$this->category->dishes()->where('dish_id', $this->id)->first()->pivot->order : null),
             'visible' =>  $this->when(!$this->hiddenInfo, $this->category ? (int)$this->category->dishes()->where('dish_id', $this->id)->first()->pivot->visible : null),
             'allow_delivery' =>  $this->when(!$this->hiddenInfo, $this->category ? (bool)$this->category->dishes()->where('dish_id', $this->id)->first()->pivot->allow_delivery : null),
