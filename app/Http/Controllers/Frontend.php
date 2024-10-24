@@ -5,10 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Menu;
 use App\Models\Restaurant;
 use App\Http\Resources\FrontendCategoryResource;
-use App\Http\Resources\FrontendAllergeneResource;
+use App\Http\Resources\FrontendAllergenResource;
 use App\Http\Resources\FrontendDeliveryMenuResource;
 use App\Http\Resources\FrontendMenusResource;
-use App\Http\Services\AllergeneServices;
+use App\Http\Services\AllergenServices;
 
 class Frontend extends Controller
 {
@@ -24,7 +24,15 @@ class Frontend extends Controller
             ;
         })->get();
 
-        return FrontendDeliveryMenuResource::collection($categories);
+        $allergens = collect();
+        foreach($categories as $category) {
+            $allergens = $allergens->merge(AllergenServices::getAllergensByCategory($category, true));
+        }
+
+        return [
+            FrontendDeliveryMenuResource::collection($categories),
+            FrontendAllergenResource::collection($allergens)
+        ];
     }
     
     /**
@@ -32,13 +40,13 @@ class Frontend extends Controller
      */
     public function categories(Restaurant $restaurant, Menu $menu)
     {
-        $allergenes = AllergeneServices::getAllergenesByMenu($menu);
+        $allergens = AllergenServices::getAllergensByMenu($menu);
 
         return [FrontendCategoryResource::collection($restaurant
             ->menus()->where('menu_id', $menu->id)->first()
             ->categories()->where('visible', 1)->get()->map(function ($category) use ($menu) {
                 return new FrontendCategoryResource($category, $menu);
-            })), FrontendAllergeneResource::collection($allergenes)
+            })), FrontendAllergenResource::collection($allergens)
         ];
     }
 
