@@ -36,7 +36,7 @@ class AllergenServices
 		$dishes = $category->dishes()
 			->wherePivot('visible', 1)
 			->when($delivery, function ($query) {
-				$query->wherePivot('allow_delivery', 1);
+				$query->where('allow_delivery', 1);
 			})
 			->get()
 		;
