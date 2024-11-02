@@ -29,6 +29,9 @@ class Frontend extends Controller
             $allergens = $allergens->merge(AllergenServices::getAllergensByCategory($category, true));
         }
 
+        // unique allergens
+        $allergens = $allergens->unique('id');
+
         return [
             FrontendDeliveryMenuResource::collection($categories),
             FrontendAllergenResource::collection($allergens)
