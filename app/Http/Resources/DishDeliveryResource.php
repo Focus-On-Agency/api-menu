@@ -21,7 +21,7 @@ class DishDeliveryResource extends JsonResource
             'price' => MenuDish::where('dish_id', $this->id)->first()->price / 100,
             'allergens' => $this->whenLoaded('allergens', function () {
                 return $this->allergens->map(function ($allergen) {
-                    return new AllergenResource($allergen, true);
+                    return AllergenResource::withHiddenInfo($allergen, true);
                 });
             }),
         ];

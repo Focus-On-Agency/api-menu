@@ -38,7 +38,7 @@ class DishResource extends JsonResource
             'allow_delivery' =>  $this->when(!$this->hiddenInfo, $this->category ? (bool)$this->category->dishes()->where('dish_id', $this->id)->first()->pivot->allow_delivery : null),
             'allergens' => $this->whenLoaded('allergens', function () {
                 return $this->allergens->map(function ($allergen) {
-                    return new AllergenResource($allergen, $this->hiddenInfo);
+                    return AllergenResource::withHiddenInfo($allergen, $this->hiddenInfo);
                 });
             }),
         ];
