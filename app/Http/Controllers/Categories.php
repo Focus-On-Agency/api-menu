@@ -11,6 +11,30 @@ use Illuminate\Support\Facades\Gate;
 
 class Categories extends Controller
 {
+        /**
+         * Normalize a translatable payload into a locale map.
+         *
+         * @return array<string, string>|null
+         */
+        private function normalizeTranslations(mixed $value): ?array
+        {
+                if (is_string($value)) {
+                        $value = ['it' => $value];
+                }
+
+                if (!is_array($value)) {
+                        return null;
+                }
+
+                $translations = collect($value)
+                        ->map(fn ($translation) => is_string($translation) ? trim($translation) : '')
+                        ->filter(fn ($translation) => $translation !== '')
+                        ->all()
+                ;
+
+                return $translations === [] ? null : $translations;
+        }
+
 	/**
 	 * Store
 	 */
@@ -20,18 +44,24 @@ class Categories extends Controller
 			abort(403, 'Unauthorized');
 		}
 
+                $request->merge([
+                        'name' => $this->normalizeTranslations($request->input('name')),
+                        'description' => $this->normalizeTranslations($request->input('description')),
+                ]);
+
 		$request->validate([
 			/**
-			 * @var string $name
-			 * @example Pizza
+                         * @var json $name
+                         * @example {"it":"Pizza","en":"Pizza"}
 			 */
-			'name' => 'required|string',
+                        'name' => 'required|array',
+                        'name.it' => 'required|string',
 
 			/**
-			 * @var string $description
-			 * @example Pizza is an Italian gastronomic product, consisting of a leavened base obtained from a dough of flour and water.
+			 * @var json $description
+			 * @example {"it":"La pizza è un prodotto gastronomico italiano.","en":"Pizza is an Italian gastronomic product."}
 			 */
-			'description' => 'nullable|string|max:65534',
+                        'description' => 'nullable|array',
 
 			/**
 			 * @var $image
@@ -129,18 +159,24 @@ class Categories extends Controller
 			abort(404, 'Category not found for this menu');
 		}
 
+                $request->merge([
+                        'name' => $this->normalizeTranslations($request->input('name')),
+                        'description' => $this->normalizeTranslations($request->input('description')),
+                ]);
+
 		$request->validate([
 			/**
-			 * @var string $name
-			 * @example Pizza
+                         * @var json $name
+                         * @example {"it":"Pizza","en":"Pizza"}
 			 */
-			'name' => 'required|string',
+                        'name' => 'required|array',
+                        'name.it' => 'required|string',
 
 			/**
-			 * @var string $description
-			 * @example Pizza is an Italian gastronomic product, consisting of a leavened base obtained from a dough of flour and water.
+			 * @var json $description
+			 * @example {"it":"La pizza è un prodotto gastronomico italiano.","en":"Pizza is an Italian gastronomic product."}
 			 */
-			'description' => 'nullable|string|max:65534',
+                        'description' => 'nullable|array',
 
 			/**
 			 * @var bool $visible

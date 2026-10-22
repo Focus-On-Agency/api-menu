@@ -4,10 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Translatable\HasTranslations;
 
 class Category extends Model
 {
     use HasFactory;
+    use HasTranslations;
 
     protected $fillable = [
         'name',
@@ -15,6 +17,13 @@ class Category extends Model
         'image_id',
         'restaurant_id',
     ];
+
+    /**
+     * Attributes stored as a JSON map of translations keyed by locale.
+     *
+     * @var array<int, string>
+     */
+    public array $translatable = ['name', 'description'];
 
     protected $with = ['image'];
 

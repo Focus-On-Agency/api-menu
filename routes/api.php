@@ -18,6 +18,7 @@ Route::post('/auth/login', [App\Http\Controllers\Users::class, 'login']);
 
 Route::prefix('frontend')->group(function () {
 	Route::prefix('{restaurant}')->group(function () {
+		Route::get('/', [App\Http\Controllers\Frontend::class, 'restaurant']);
 		Route::get('/menu', [App\Http\Controllers\Frontend::class, 'menus']);
 		Route::get('/menu/{menu}/categories', [App\Http\Controllers\Frontend::class, 'categories']);
 		Route::get('/delivery-menu', [App\Http\Controllers\Frontend::class, 'deliveryMenu']);
@@ -38,7 +39,9 @@ Route::group(["middleware" => ["auth:sanctum"]], function(){
 		Route::get('/', [App\Http\Controllers\Restaurants::class, 'index']);
 		Route::get('/{restaurant}', [App\Http\Controllers\Restaurants::class, 'show']);
 		Route::post('/', [App\Http\Controllers\Restaurants::class, 'store']);
-		Route::put('/{restaurant}', [App\Http\Controllers\Restaurants::class, 'update']);
+		// PHP does not parse multipart bodies on PUT, so the venue form (which may
+		// carry a picture) is sent as POST while JSON clients can still use PUT.
+		Route::match(['post', 'put'], '/{restaurant}', [App\Http\Controllers\Restaurants::class, 'update']);
 		Route::delete('/{restaurant}', [App\Http\Controllers\Restaurants::class, 'destroy']);
 	});
 

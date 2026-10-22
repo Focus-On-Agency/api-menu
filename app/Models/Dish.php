@@ -4,16 +4,24 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Translatable\HasTranslations;
 
 class Dish extends Model
 {
     use HasFactory;
+    use HasTranslations;
 
     protected $fillable = [
         'name',
         'description',
-        'description_en',
     ];
+
+    /**
+     * Attributes stored as a JSON map of translations keyed by locale.
+     *
+     * @var array<int, string>
+     */
+    public array $translatable = ['name', 'description'];
 
     protected $with = ['allergens'];
 

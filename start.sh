@@ -1,23 +1,21 @@
 #!/bin/bash
 
-# Esegui composer install
-composer install
+set -e
 
-# Esegui composer update
-composer update
-
-# Lunch migration
-php artisan migrate
-
-php artisan db:seed
-
-# Controlla se il file .env esiste già
+# The environment file must exist before any artisan command runs.
 if [ ! -f .env ]; then
-    # Se non esiste, rinomina .env.local in .env
-    cp .env.local .env
+    # If it does not exist, copy the production template into .env
+    cp .env.prod .env
+    echo "Creato .env da .env.prod."
 else
     echo "Il file .env esiste già."
 fi
+
+# Install the dependencies locked in composer.lock, without the dev packages
+composer install --no-dev --optimize-autoloader --no-interaction
+
+# Launch migration
+php artisan migrate --force
 
 echo "L'applicazione è pronta per essere eseguita."
 

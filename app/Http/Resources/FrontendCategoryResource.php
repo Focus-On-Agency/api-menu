@@ -25,10 +25,10 @@ class FrontendCategoryResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'name' => $this->name,
-            'description' => $this->description,
+            'name' => $this->getTranslations('name'),
+            'description' => $this->getTranslations('description'),
             'image_path' => $this->image?->path,
-            'iamge_name' => $this->image?->name,
+            'image_name' => $this->image?->name,
             'dishes' => $this->dishes()->where('visible', 1)->get()->map(function ($dish) {
                 return new DishResource($dish, $this->menu, Category::find($this->id), true);
             })

@@ -13,9 +13,10 @@ class Restaurant extends Model
     protected $fillable = [
         'name',
         'address',
+        'image_id',
     ];
 
-    protected $with = ['menus'];
+    protected $with = ['menus', 'image'];
 
     public function users()
     {
@@ -30,5 +31,10 @@ class Restaurant extends Model
     public function categories()
     {
         return $this->hasMany(Category::class, 'restaurant_id');
+    }
+
+    public function image()
+    {
+        return $this->belongsTo(Image::class, 'image_id');
     }
 }

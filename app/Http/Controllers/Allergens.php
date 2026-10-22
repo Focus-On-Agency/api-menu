@@ -14,12 +14,19 @@ class Allergens extends Controller
      */
     public function index()
     {
-        return AllergenResource::collection(Allergen::query()
-            ->orderBy('name')
-            ->get()->map(function ($allergen) {
-                return new AllergenResource($allergen);
-            }))
-        ;
+        // The allergen name is the identifier shown to the guest, so it may be
+        // numeric (e.g. "1".."14") or textual (e.g. "Gluten"). Numeric ones must
+        // be listed in numeric order, textual ones keep the alphabetical order.
+        $allergens = Allergen::all()->sortBy(function ($allergen) {
+            $isNumeric = ctype_digit((string) $allergen->name);
+
+            return [
+                $isNumeric ? 0 : 1,
+                $isNumeric ? (int) $allergen->name : $allergen->name,
+            ];
+        })->values();
+
+        return AllergenResource::collection($allergens);
     }
 
     /**
@@ -47,13 +54,13 @@ class Allergens extends Controller
             'color' => 'nullable|string',
 
             /**
-             * @var string $description
-             * @example Dit gerecht bevat gluten
+             * @var json $description
+             * @example {"it":"Questo piatto contiene glutine","en":"This dish contains gluten"}
              */
-            'description' => 'required|string',
+            'description' => 'required',
         ]);
 
-        $allergen = Allergen::create($request->all());
+        $allergen = Allergen::create($request->only(['name', 'icon', 'color', 'description']));
 
         return new AllergenResource($allergen);
     }
@@ -91,13 +98,13 @@ class Allergens extends Controller
             'color' => 'nullable|string',
 
             /**
-             * @var string $description
-             * @example Dit gerecht bevat gluten
+             * @var json $description
+             * @example {"it":"Questo piatto contiene glutine","en":"This dish contains gluten"}
              */
-            'description' => 'required|string',
+            'description' => 'required',
         ]);
 
-        $allergen->update($request->all());
+        $allergen->update($request->only(['name', 'icon', 'color', 'description']));
 
         return new AllergenResource($allergen);
     }

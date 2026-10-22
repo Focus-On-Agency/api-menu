@@ -8,10 +8,19 @@ use App\Http\Resources\FrontendCategoryResource;
 use App\Http\Resources\FrontendAllergenResource;
 use App\Http\Resources\FrontendDeliveryMenuResource;
 use App\Http\Resources\FrontendMenusResource;
+use App\Http\Resources\FrontendRestaurantResource;
 use App\Http\Services\AllergenServices;
 
 class Frontend extends Controller
 {
+    /**
+     * Get the restaurant identity (name, address and picture) for the venue page
+     */
+    public function restaurant(Restaurant $restaurant)
+    {
+        return new FrontendRestaurantResource($restaurant);
+    }
+
     /**
      * Get delivery menu for a restaurant
      */

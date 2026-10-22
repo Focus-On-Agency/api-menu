@@ -13,6 +13,30 @@ use Illuminate\Support\Facades\Gate;
 class Dishes extends Controller
 {
     /**
+     * Normalize a translatable payload into a locale map.
+     *
+     * @return array<string, string>|null
+     */
+    private function normalizeTranslations(mixed $value): ?array
+    {
+        if (is_string($value)) {
+            $value = ['it' => $value];
+        }
+
+        if (!is_array($value)) {
+            return null;
+        }
+
+        $translations = collect($value)
+            ->map(fn ($translation) => is_string($translation) ? trim($translation) : '')
+            ->filter(fn ($translation) => $translation !== '')
+            ->all()
+        ;
+
+        return $translations === [] ? null : $translations;
+    }
+
+    /**
      * Store
      */
     public function store(Restaurant $restaurant, Menu $menu, Request $request)
@@ -21,24 +45,24 @@ class Dishes extends Controller
 			abort(404, 'Menu not found for this restaurant');
 		}
 
+        $request->merge([
+            'name' => $this->normalizeTranslations($request->input('name')),
+            'description' => $this->normalizeTranslations($request->input('description')),
+        ]);
+
         $request->validate([
             /**
-             * @var $name
-             * @example Pizza Margherita
+             * @var json $name
+             * @example {"it":"Pizza Margherita","en":"Margherita Pizza"}
              */
-            'name' => 'required|string',
+            'name' => 'required|array',
+            'name.it' => 'required|string',
 
             /**
-             * @var string $description
-             * @example Pizza met tomatensaus, mozzarella en ham
+             * @var json $description
+             * @example {"it":"Pizza con salsa di pomodoro, mozzarella e prosciutto","en":"Pizza with tomato sauce, mozzarella and ham"}
              */
-            'description' => 'nullable|string',
-
-            /**
-             * @var string $description_en
-             * @example Pizza with tomato sauce, mozzarella and ham
-             */
-            'description_en' => 'nullable|string',
+            'description' => 'nullable|array',
 
             /**
              * @var float $price
@@ -56,20 +80,23 @@ class Dishes extends Controller
         $dish = Dish::create([
             'name' => $request->input('name'),
             'description' => $request->input('description'),
-            'description_en' => $request->input('description_en'),
         ]);
 
         $menu->dishes()->attach($dish->id, [
             'price' => $request->input('price') * 100,
         ]);
 
-        // converto allergens_id in un array se è un json
-        if (is_string($request->input('allergens_id'))) {
-           $request->merge([
-               'allergens_id' => json_decode($request->input('allergens_id')),
-           ]);
+        // Sync allergens only when the client explicitly sends the field, so a
+        // partial update never wipes the existing associations.
+        if ($request->has('allergens_id')) {
+            if (is_string($request->input('allergens_id'))) {
+                $request->merge([
+                    'allergens_id' => json_decode($request->input('allergens_id'), true),
+                ]);
+            }
+
+            $dish->allergens()->sync($request->input('allergens_id') ?? []);
         }
-        $dish->allergens()->sync($request->input('allergens_id', []));
 
         $dish->load('allergens');
 
@@ -103,24 +130,24 @@ class Dishes extends Controller
 			abort(404, 'Menu not found for this restaurant');
 		}
 
+        $request->merge([
+            'name' => $this->normalizeTranslations($request->input('name')),
+            'description' => $this->normalizeTranslations($request->input('description')),
+        ]);
+
         $request->validate([
             /**
-             * @var string $name
-             * @example Pizza Margherita
+             * @var json $name
+             * @example {"it":"Pizza Margherita","en":"Margherita Pizza"}
              */
-            'name' => 'required|string',
+            'name' => 'required|array',
+            'name.it' => 'required|string',
 
             /**
-             * @var string $description
-             * @example Pizza met tomatensaus, mozzarella en ham
+             * @var json $description
+             * @example {"it":"Pizza con salsa di pomodoro, mozzarella e prosciutto","en":"Pizza with tomato sauce, mozzarella and ham"}
              */
-            'description' => 'nullable|string',
-
-            /**
-             * @var string $description_en
-             * @example Pizza with tomato sauce, mozzarella and ham
-             */
-            'description_en' => 'nullable|string',
+            'description' => 'nullable|array',
 
             /**
              * @var float $price
@@ -138,20 +165,24 @@ class Dishes extends Controller
         $dish->update([
             'name' => $request->input('name'),
             'description' => $request->input('description'),
-            'description_en' => $request->input('description_en'),
         ]);
 
         $menu->dishes()->updateExistingPivot($dish->id, [
             'price' => $request->input('price') * 100,
         ]);
 
-        if (is_string($request->input('allergens_id'))) {
-           $request->merge([
-               'allergens_id' => json_decode($request->input('allergens_id')),
-           ]);
+        // Sync allergens only when the client explicitly sends the field, so a
+        // partial update never wipes the existing associations.
+        if ($request->has('allergens_id')) {
+            if (is_string($request->input('allergens_id'))) {
+                $request->merge([
+                    'allergens_id' => json_decode($request->input('allergens_id'), true),
+                ]);
+            }
+
+            $dish->allergens()->sync($request->input('allergens_id') ?? []);
         }
-        $dish->allergens()->sync($request->input('allergens_id', []));
-        
+
         $dish->load('allergens');
 
         return new DishResource($dish, $menu);
@@ -170,24 +201,24 @@ class Dishes extends Controller
             abort(404, 'Category not found for this menu');
         }
 
+        $request->merge([
+            'name' => $this->normalizeTranslations($request->input('name')),
+            'description' => $this->normalizeTranslations($request->input('description')),
+        ]);
+
         $request->validate([
             /**
-             * @var $name
-             * @example Pizza Margherita
+             * @var json $name
+             * @example {"it":"Pizza Margherita","en":"Margherita Pizza"}
              */
-            'name' => 'required|string',
+            'name' => 'required|array',
+            'name.it' => 'required|string',
 
             /**
-             * @var string $description
-             * @example Pizza met tomatensaus, mozzarella en ham
+             * @var json $description
+             * @example {"it":"Pizza con salsa di pomodoro, mozzarella e prosciutto","en":"Pizza with tomato sauce, mozzarella and ham"}
              */
-            'description' => 'nullable|string',
-
-            /**
-             * @var string $description_en
-             * @example Pizza with tomato sauce, mozzarella and ham
-             */
-            'description_en' => 'nullable|string',
+            'description' => 'nullable|array',
 
             /**
              * @var float $price
@@ -205,7 +236,6 @@ class Dishes extends Controller
         $dish = Dish::create([
             'name' => $request->input('name'),
             'description' => $request->input('description'),
-            'description_en' => $request->input('description_en'),
         ]);
 
         $category->dishes()->attach($dish->id, [
@@ -217,12 +247,17 @@ class Dishes extends Controller
             'price' => $request->input('price') * 100,
         ]);
 
-        if (is_string($request->input('allergens_id'))) {
-           $request->merge([
-               'allergens_id' => json_decode($request->input('allergens_id')),
-           ]);
+        // Sync allergens only when the client explicitly sends the field, so a
+        // partial update never wipes the existing associations.
+        if ($request->has('allergens_id')) {
+            if (is_string($request->input('allergens_id'))) {
+                $request->merge([
+                    'allergens_id' => json_decode($request->input('allergens_id'), true),
+                ]);
+            }
+
+            $dish->allergens()->sync($request->input('allergens_id') ?? []);
         }
-        $dish->allergens()->sync($request->input('allergens_id', []));
 
         $dish->load('allergens');
 

@@ -15,8 +15,12 @@ class FrontendAllergenResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
+            // The name is the visual identifier of the legend (e.g. "01" or the
+            // leaf icon), while the description carries the localized label.
             'name' => $this->name,
-            'description' => $this->description
+            'icon' => $this->icon,
+            'color' => $this->color,
+            'description' => $this->getTranslations('description'),
         ];
     }
 }

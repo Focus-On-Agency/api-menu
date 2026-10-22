@@ -27,8 +27,8 @@ class CategoryResource extends JsonResource
         $menu = $this->menu;
         return [
             'id' => $this->id,
-            'name' => $this->name,
-            'description' => $this->description,
+            'name' => $this->getTranslations('name'),
+            'description' => $this->getTranslations('description'),
             'order' => (int)$this->menus()->where('menu_id', $menu->id)->first()?->pivot->order,
             'visible' => (int)$this->menus()->where('menu_id', $menu->id)->first()?->pivot->visible,
             'image' => new ImageResource($this->whenLoaded('image')),

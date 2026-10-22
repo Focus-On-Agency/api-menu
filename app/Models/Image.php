@@ -20,4 +20,9 @@ class Image extends Model
     {
         return $this->hasOne(Category::class, 'image_id');
     }
+
+    public function restaurant()
+    {
+        return $this->hasOne(Restaurant::class, 'image_id');
+    }
 }

@@ -58,12 +58,29 @@ class Restaurants extends Controller
              * @example [1]
              */
             'user_ids' => 'nullable|array',
+
+            /**
+             * @var $image
+             */
+            'image' => 'nullable|image',
         ]);
 
         $restaurant = Restaurant::create([
             'name' => $request->input('name'),
             'address' => $request->input('address'),
         ]);
+
+        if ($request->hasFile('image')) {
+            $fileName = time() . '_' . $request->file('image')->getClientOriginalName();
+
+            $image = $restaurant->image()->create([
+                'path' => 'storage/' . $request->file('image')->storeAs('restaurants', $fileName, 'public'),
+                'name' => $request->file('image')->getClientOriginalName(),
+            ]);
+
+            $restaurant->image_id = $image->id;
+            $restaurant->save();
+        }
 
         $restaurant->users()->sync($request->input('user_ids', []));
 
@@ -113,6 +130,11 @@ class Restaurants extends Controller
              * @example [1]
              */
             'user_ids' => 'nullable|array',
+
+            /**
+             * @var $image
+             */
+            'image' => 'nullable|image',
         ]);
 
         if ($request->has('name')) {
@@ -123,13 +145,24 @@ class Restaurants extends Controller
             $restaurant->address = $request->input('address');
         }
 
+        if ($request->hasFile('image')) {
+            $fileName = time() . '_' . $request->file('image')->getClientOriginalName();
+
+            $image = $restaurant->image()->create([
+                'path' => 'storage/' . $request->file('image')->storeAs('restaurants', $fileName, 'public'),
+                'name' => $request->file('image')->getClientOriginalName(),
+            ]);
+
+            $restaurant->image_id = $image->id;
+        }
+
         if ($request->has('user_ids')) {
             $restaurant->users()->sync($request->input('user_ids'));
         }
 
         $restaurant->save();
 
-        $restaurant->load('users');
+        $restaurant->load('users', 'image');
 
         return new RestaurantResource($restaurant);
     }

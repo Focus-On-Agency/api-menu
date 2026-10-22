@@ -26,7 +26,7 @@ class AllergenResource extends JsonResource
             'name' => $this->name,
             'icon' => $this->icon,
             'color' => $this->color,
-            'description' => $this->description,
+            'description' => $this->getTranslations('description'),
         ];
     }
 }

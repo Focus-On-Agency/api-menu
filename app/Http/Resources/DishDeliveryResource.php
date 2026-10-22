@@ -16,12 +16,9 @@ class DishDeliveryResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'name' => $this->name,
-            'description' => [
-                'it' => $this->description,
-                'en' => $this->description_en,
-            ],
-            'price' => MenuDish::where('dish_id', $this->id)->first()->price,
+            'name' => $this->getTranslations('name'),
+            'description' => $this->getTranslations('description'),
+            'price' => MenuDish::where('dish_id', $this->id)->first()->price / 100,
             'allergens' => $this->whenLoaded('allergens', function () {
                 return $this->allergens->map(function ($allergen) {
                     return new AllergenResource($allergen, true);

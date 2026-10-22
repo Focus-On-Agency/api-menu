@@ -17,6 +17,11 @@ class Images extends Controller
             $image->category->save();
         }
 
+        if ($image->restaurant) {
+            $image->restaurant->image_id = null;
+            $image->restaurant->save();
+        }
+
         Storage::delete(str_replace("storage/", "", $image->path));
 
         $image->delete();
